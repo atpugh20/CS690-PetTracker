@@ -22,6 +22,12 @@ class Appointment {
         Description = description;
     }
 
+    public void QuickDetails() {
+        Console.WriteLine(
+            Type + " - " + Date + " - " + Location
+        );
+    }
+
     public void PrintDetails() {
         Console.WriteLine(
             "ID:\t\t" + ID + '\n' +

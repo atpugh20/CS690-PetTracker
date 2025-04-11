@@ -7,12 +7,12 @@ class Pet {
     private int UserID;
 
     public Pet(
-        int id, 
-        string name, 
-        string breed, 
-        char sex, 
-        string birthday, 
-        int user_id
+        int id          = 0, 
+        string name     = "Momo", 
+        string breed    = "Cat", 
+        char sex        = 'F', 
+        string birthday = "07/30/2017", 
+        int user_id     = 0
     ) {
         ID          = id;
         Name        = name;
@@ -20,6 +20,12 @@ class Pet {
         Sex         = sex;
         Birthday    = birthday;
         UserID      = user_id;
+    }
+
+    public void QuickDetails() {
+        Console.WriteLine(
+            Name + " - " + Breed + " - " + Birthday
+        );
     }
 
     public void PrintDetails() {
