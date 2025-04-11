@@ -1,24 +1,54 @@
 ﻿namespace PetTracker;
 
 class Program {
+    static int GetMainMenuChoice() {
+        int choice = 0; 
+        while (choice == 0) {
+            Console.WriteLine(
+                "What would you like to do?\n" +
+                "1. Add pet\n" +
+                "2. Add appointment\n" +
+                "3. Add supply\n"
+            );
+
+            try {
+                string input = Console.ReadLine();
+                choice = Int32.Parse(input);
+
+                if (choice < 1 || choice > 3) {
+                    choice = 0;
+                    Console.WriteLine("Invalid choice. Please try again!\n");
+                }
+            } catch (FormatException) {
+                Console.WriteLine("Invalid choice. Please try again!\n");
+            }
+        }
+        return choice;
+    }
+
+    static Pet AddPet() {
+
+    }
+
     static void Main(string[] args) {
+        List<Pet> pets                  = new List<Pet>();
+        List<Appointment> appointments  = new List<Appointment>();
+        List<Supply> supplies           = new List<Supply>();
+
         Console.WriteLine("\n\nPet Tracker!\n");
 
-        string[] PET_FIELDS = {"name", "breed", "sex", "birthday", "user"};
-        string[] APP_FIELDS = {"pet_id",};
-        string[] SUP_FIELDS = {};
+        int choice = GetMainMenuChoice();
 
-        Dictionary<string, string> pet1 = new Dictionary<string, string>();
-
-        Console.WriteLine("Enter the details below:\n\n");
+        switch (choice) {
+            case 1:
+                pets.Add(AddPet);
+                break;
+            default:
+                Console.WriteLine("Default");
+                break;
+        }
         
-        foreach (string field in PET_FIELDS) {
-            Console.WriteLine(field + ": ");
-            pet1[field] = Console.ReadLine();
-        }
-
-        foreach (string field in PET_FIELDS) {
-            Console.WriteLine(field + ": " + pet1[field]);
-        }
+        
+        Console.WriteLine(choice);
     }
 }
