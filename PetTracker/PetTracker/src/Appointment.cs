@@ -1,11 +1,15 @@
 class Appointment {
-    public int ID;
-    private int PetID;
-    private string Type;
-    private string Date;
-    private string Location;
-    private string Description;
+    public int ID {get; set;}
+    public int PetID {get; set;}
+    public string Type {get; set;}
+    public string Date {get; set;}
+    public string Location {get; set;}
+    public string Description {get; set;}
 
+    // Empty Constructor for JSON Deserialize
+    public Appointment() {}
+
+    // Standard Constructor
     public Appointment(
         int id,
         int pet_id,

@@ -1,18 +1,22 @@
 class Pet {
-    public int ID;
-    private string Name;
-    private string Breed;
-    private char Sex;
-    private string Birthday;
-    private int UserID;
+    public int ID {get; set;}
+    public string Name {get; set;}
+    public string Breed {get; set;}
+    public char Sex {get; set;} 
+    public string Birthday {get; set;}
+    public int UserID {get; set;}
 
+    // Empty Constructor for JSON Deserialize
+    public Pet() {}
+
+    // Standard Constructor
     public Pet(
-        int id          = 0, 
-        string name     = "Momo", 
-        string breed    = "Cat", 
-        char sex        = 'F', 
-        string birthday = "07/30/2017", 
-        int user_id     = 0
+        int id,
+        string name, 
+        string breed,
+        char sex,
+        string birthday,
+        int user_id
     ) {
         ID          = id;
         Name        = name;

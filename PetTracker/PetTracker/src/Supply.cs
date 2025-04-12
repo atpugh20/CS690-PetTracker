@@ -1,11 +1,15 @@
 class Supply {
-    public int ID;
-    private int PetID;
-    private string Name;
-    private string DateReceived;
-    private string ResupplyRate;
-    private string Location;
+    public int ID {get; set;}
+    public int PetID {get; set;}
+    public string Name {get; set;}
+    public string DateReceived {get; set;}
+    public string ResupplyRate {get; set;}
+    public string Location {get; set;}
 
+    // Empty Constructor for JSON Deserialize
+    public Supply() {}
+
+    // Standard Constructor
     public Supply(
         int id,
         int pet_id,

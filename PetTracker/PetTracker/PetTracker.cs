@@ -1,9 +1,8 @@
 ﻿namespace PetTracker;
 
+using System.Text.Json;
+
 class PetTracker {
-    static public List<Pet> pets                  = new List<Pet>();
-    static public List<Appointment> appointments  = new List<Appointment>();
-    static public List<Supply> supplies           = new List<Supply>();
 
     static int Login() {
         Console.WriteLine("What is your user #?");
@@ -36,52 +35,12 @@ class PetTracker {
         }
         return choice;
     }
-
-    static void AddPet(int user_id) {
-        Console.WriteLine("Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Breed: ");
-        string breed = Console.ReadLine();
-        Console.WriteLine("Sex: ");
-        string sex = Console.ReadLine();
-        Console.WriteLine("Birthday: ");
-        string birthday = Console.ReadLine();
-
-        pets.Add(new Pet(0, name, breed, char.Parse(sex), birthday, user_id));
-    }
-
-    static void AddAppointment() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Type: ");
-        string type = Console.ReadLine();
-        Console.WriteLine("Date: ");
-        string date = Console.ReadLine();
-        Console.WriteLine("Location: ");
-        string location = Console.ReadLine();
-        Console.WriteLine("Description: ");
-        string description = Console.ReadLine();
-
-        appointments.Add(new Appointment(0, int.Parse(pet_id), type, date, location, description));
-    }
-
-    static void AddSupply() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Date Received: ");
-        string date_received = Console.ReadLine();
-        Console.WriteLine("Resupply Rate: ");
-        string resupply_rate = Console.ReadLine();
-        Console.WriteLine("Location: ");
-        string location = Console.ReadLine();
-
-        supplies.Add(new Supply(0, int.Parse(pet_id), name, date_received, resupply_rate, location));
-    }
-
+ 
     static void Main(string[] args) {
         bool running = true;
+
+        DataHandler data_handler = new DataHandler();
+        data_handler.LoadData();
 
         Console.WriteLine("\n---------------\n| Pet Tracker |\n---------------");
 
@@ -92,13 +51,13 @@ class PetTracker {
 
             switch (choice) {
                 case 1:
-                    AddPet(user);
+                    data_handler.AddPet(user);
                     break;
                 case 2:
-                    AddAppointment();
+                    data_handler.AddAppointment();
                     break;
                 case 3:
-                    AddSupply();
+                    data_handler.AddSupply();
                     break;
                 case 4:
                     running = false;
@@ -109,20 +68,22 @@ class PetTracker {
             }
 
             Console.WriteLine("\n--------------------\nPets:\n--------------------");
-            foreach (Pet p in pets) {
-                p.QuickDetails();
+            foreach (Pet pet in data_handler.Pets) {
+                pet.QuickDetails();
             }
 
             Console.WriteLine("\n--------------------\nAppointments:\n--------------------");
-            foreach (Appointment a in appointments) {
-                a.QuickDetails();
+            foreach (Appointment appointment in data_handler.Appointments) {
+                appointment.QuickDetails();
             }
 
             Console.WriteLine("\n--------------------\nSupplies:\n--------------------");
-            foreach (Supply s in supplies) {
-                s.QuickDetails();
+            foreach (Supply supply in data_handler.Supplies) {
+                supply.QuickDetails();
             }
-        }
+        } 
+
+        data_handler.SaveData();
 
         Console.WriteLine("Goodbye!"); 
     }
