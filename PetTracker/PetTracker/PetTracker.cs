@@ -18,14 +18,15 @@ class PetTracker {
                 "1. Add pet\n" +
                 "2. Add appointment\n" +
                 "3. Add supply\n" +
-                "4. Quit\n"
+                "4. Add medical record\n" +
+                "5. Quit\n"
             );
 
             try {
                 string input = Console.ReadLine();
                 choice = int.Parse(input);
 
-                if (choice < 1 || choice > 4) {
+                if (choice < 1 || choice > 5) {
                     choice = 0;
                     Console.WriteLine("Invalid choice. Please try again!\n");
                 }
@@ -60,6 +61,9 @@ class PetTracker {
                     data_handler.AddSupply();
                     break;
                 case 4:
+                    data_handler.AddMedicalRecord();
+                    break;
+                case 5:
                     running = false;
                     break; 
                 default:
@@ -81,10 +85,16 @@ class PetTracker {
             foreach (Supply supply in data_handler.Supplies) {
                 supply.QuickDetails();
             }
+
+            Console.WriteLine("\n--------------------\nRecords:\n--------------------");
+            foreach (MedicalRecord record in data_handler.MedicalRecords) {
+                record.QuickDetails();
+            }
+
         } 
 
         data_handler.SaveData();
 
-        Console.WriteLine("Goodbye!"); 
+        Console.WriteLine("\nGoodbye!"); 
     }
 }

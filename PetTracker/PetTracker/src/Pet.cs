@@ -3,7 +3,7 @@ class Pet {
     public string Name {get; set;}
     public string Breed {get; set;}
     public char Sex {get; set;} 
-    public string Birthday {get; set;}
+    public DateTime Birthday {get; set;}
     public int UserID {get; set;}
 
     // Empty Constructor for JSON Deserialize
@@ -22,13 +22,13 @@ class Pet {
         Name        = name;
         Breed       = breed;
         Sex         = sex;
-        Birthday    = birthday;
+        Birthday    = DateTime.Parse(birthday);
         UserID      = user_id;
     }
 
     public void QuickDetails() {
         Console.WriteLine(
-            Name + " - " + Breed + " - " + Birthday
+            Name + " - " + Breed + " - " + Birthday.Date.ToString("MM/dd/yyyy")
         );
     }
 

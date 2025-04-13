@@ -2,7 +2,7 @@ class Appointment {
     public int ID {get; set;}
     public int PetID {get; set;}
     public string Type {get; set;}
-    public string Date {get; set;}
+    public DateTime Date {get; set;}
     public string Location {get; set;}
     public string Description {get; set;}
 
@@ -21,25 +21,27 @@ class Appointment {
         ID = id;
         PetID = pet_id;
         Type = type;
-        Date = date;
+        Date = DateTime.Parse(date);
         Location = location;
         Description = description;
     }
 
     public void QuickDetails() {
         Console.WriteLine(
-            Type + " - " + Date + " - " + Location
+            Type + " - " + 
+            Date.Date.ToString("MM/dd/yyyy") + " - " + 
+            Location
         );
     }
 
     public void PrintDetails() {
         Console.WriteLine(
-            "ID:\t\t" + ID + '\n' +
-            "Pet ID:\t\t" + PetID + '\n' +
-            "Type:\t\t" + Type + '\n' +
-            "Date:\t\t" + Date + '\n' +
-            "Location:\t" + Location + '\n' +
-            "Description:\t" + Description + '\n'
+            "ID:\t\t"        + ID           + '\n' +
+            "Pet ID:\t\t"    + PetID        + '\n' +
+            "Type:\t\t"      + Type         + '\n' +
+            "Date:\t\t"      + Date         + '\n' +
+            "Location:\t"    + Location     + '\n' +
+            "Description:\t" + Description  + '\n'
         );
     }
 }

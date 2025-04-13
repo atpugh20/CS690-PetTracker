@@ -2,7 +2,7 @@ class Supply {
     public int ID {get; set;}
     public int PetID {get; set;}
     public string Name {get; set;}
-    public string DateReceived {get; set;}
+    public DateTime DateReceived {get; set;}
     public string ResupplyRate {get; set;}
     public string Location {get; set;}
 
@@ -21,25 +21,27 @@ class Supply {
         ID              = id;
         PetID           = pet_id;
         Name            = name;
-        DateReceived    = date_received;
+        DateReceived    = DateTime.Parse(date_received);
         ResupplyRate    = resupply_rate;
         Location        = location;
     }
 
     public void QuickDetails() {
         Console.WriteLine(
-            Name + " - " + DateReceived + " - " + Location
+            Name + " - " + 
+            DateReceived.Date.ToString("MM/dd/yyyy") + " - " + 
+            Location
         );
     }
 
     public void PrintDetails() {
         Console.WriteLine(
-            "ID:\t\t" + ID + '\n' +
-            "Pet ID:\t\t" + PetID + '\n' +
-            "Name:\t\t" + Name + '\n' +
-            "Date Received:\t" + DateReceived + '\n' +
-            "Resupply Rate:\t" + ResupplyRate + '\n' +
-            "Location:\t" + Location + '\n'
+            "ID:\t\t"           + ID            + '\n' +
+            "Pet ID:\t\t"       + PetID         + '\n' +
+            "Name:\t\t"         + Name          + '\n' +
+            "Date Received:\t"  + DateReceived  + '\n' +
+            "Resupply Rate:\t"  + ResupplyRate  + '\n' +
+            "Location:\t"       + Location      + '\n'
         );
     }
 }

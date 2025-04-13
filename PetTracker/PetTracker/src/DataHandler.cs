@@ -6,24 +6,29 @@ class DataHandler {
     public List<Pet> Pets {get; set;}
     public List<Appointment> Appointments {get; set;} 
     public List<Supply> Supplies {get; set;}
+    public List<MedicalRecord> MedicalRecords {get; set;}
 
     private string DataPath;
 
     public DataHandler() {
-        Pets = new List<Pet>();
-        Appointments = new List<Appointment>();
-        Supplies = new List<Supply>();
-        DataPath = "./data/";
+        Pets            = new List<Pet>();
+        Appointments    = new List<Appointment>();
+        Supplies        = new List<Supply>();
+        MedicalRecords  = new List<MedicalRecord>();
+
+        DataPath        = "./data/";
     }
 
     public void SaveData() {
-        string petString = JsonSerializer.Serialize(Pets);
-        string appointmentString = JsonSerializer.Serialize(Appointments);
-        string supplyString = JsonSerializer.Serialize(Supplies);
-        
+        string petString            = JsonSerializer.Serialize(Pets);
+        string appointmentString    = JsonSerializer.Serialize(Appointments);
+        string supplyString         = JsonSerializer.Serialize(Supplies);
+        string recordString         = JsonSerializer.Serialize(MedicalRecords);
+
         File.WriteAllText(DataPath + "pets.txt", petString);
         File.WriteAllText(DataPath + "appointments.txt", appointmentString);
         File.WriteAllText(DataPath + "supplies.txt", supplyString);
+        File.WriteAllText(DataPath + "records.txt", recordString);
     }
 
     public string LoadString(string file_name) {
@@ -50,10 +55,12 @@ class DataHandler {
         string petString            = LoadString("pets.txt");
         string appointmentString    = LoadString("appointments.txt");
         string supplyString         = LoadString("supplies.txt");
+        string recordString         = LoadString("records.txt");
 
-        Pets = JsonSerializer.Deserialize<List<Pet>>(petString); 
-        Appointments = JsonSerializer.Deserialize<List<Appointment>>(appointmentString); 
-        Supplies = JsonSerializer.Deserialize<List<Supply>>(supplyString); 
+        Pets            = JsonSerializer.Deserialize<List<Pet>>(petString); 
+        Appointments    = JsonSerializer.Deserialize<List<Appointment>>(appointmentString); 
+        Supplies        = JsonSerializer.Deserialize<List<Supply>>(supplyString); 
+        MedicalRecords  = JsonSerializer.Deserialize<List<MedicalRecord>>(recordString); 
     }
 
     public void AddPet(int user_id) {
@@ -99,5 +106,16 @@ class DataHandler {
         Supplies.Add(new Supply(0, int.Parse(pet_id), name, date_received, resupply_rate, location));
     }
 
+    public void AddMedicalRecord() {
+        Console.WriteLine("Pet ID: ");
+        string pet_id = Console.ReadLine();
+        Console.WriteLine("Record Name: ");
+        string name = Console.ReadLine();
+        Console.WriteLine("Initial Date: ");
+        string initial_date = Console.ReadLine();
+        Console.WriteLine("Rate: ");
+        string rate = Console.ReadLine();
 
+        MedicalRecords.Add(new MedicalRecord(0, int.Parse(pet_id), name, initial_date, rate));
+    }
 }
