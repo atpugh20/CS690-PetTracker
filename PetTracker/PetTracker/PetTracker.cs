@@ -8,8 +8,8 @@ class PetTracker {
         Console.WriteLine("What is your user #?");
         string input = Console.ReadLine();
         return int.Parse(input);
-    } 
-    
+    }
+ 
     static int GetMainMenuChoice() {
         int choice = 0; 
         while (choice == 0) {
@@ -41,11 +41,21 @@ class PetTracker {
         bool running = true;
 
         DataHandler data_handler = new DataHandler();
+        AccountHandler account_handler = new AccountHandler();
+
         data_handler.LoadData();
 
         Console.WriteLine("\n---------------\n| Pet Tracker |\n---------------");
 
         int user = Login();
+
+        account_handler.LoadAccounts();
+        account_handler.CreateAccount();
+        account_handler.SaveAccounts();
+
+        string un = account_handler.Login();
+
+        Console.WriteLine("Hello " + un + "!"); 
 
         while (running) {
             int choice = GetMainMenuChoice();

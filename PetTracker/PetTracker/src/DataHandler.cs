@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text.Json;
+using Microsoft.VisualBasic.FileIO;
 
 class DataHandler {
     public List<Pet> Pets {get; set;}
@@ -8,7 +9,7 @@ class DataHandler {
     public List<Supply> Supplies {get; set;}
     public List<MedicalRecord> MedicalRecords {get; set;}
 
-    private string DataPath;
+    private string DataPath {get;}
 
     public DataHandler() {
         Pets            = new List<Pet>();
@@ -20,31 +21,15 @@ class DataHandler {
     }
 
     public void SaveData() {
-        string petString            = JsonSerializer.Serialize(Pets);
-        string appointmentString    = JsonSerializer.Serialize(Appointments);
-        string supplyString         = JsonSerializer.Serialize(Supplies);
-        string recordString         = JsonSerializer.Serialize(MedicalRecords);
+        string pet_string            = JsonSerializer.Serialize(Pets);
+        string appointment_string    = JsonSerializer.Serialize(Appointments);
+        string supply_string         = JsonSerializer.Serialize(Supplies);
+        string record_string         = JsonSerializer.Serialize(MedicalRecords);
 
-        File.WriteAllText(DataPath + "pets.txt", petString);
-        File.WriteAllText(DataPath + "appointments.txt", appointmentString);
-        File.WriteAllText(DataPath + "supplies.txt", supplyString);
-        File.WriteAllText(DataPath + "records.txt", recordString);
-    }
-
-    public string LoadString(string file_name) {
-        /**
-         * Reads the file that is located at DataPath + file_name and
-         * returns it as a string. If there is not a file located at
-         * the specified path, then it returns "[]".
-         */ 
-        string dataString = "[]";
-        if (File.Exists(DataPath + file_name)) {
-            dataString = File.ReadAllText(DataPath + file_name);
-        } else {
-            Console.WriteLine("Could not find " + DataPath + file_name);
-        }
-
-        return dataString;
+        File.WriteAllText(DataPath + "pets.txt", pet_string);
+        File.WriteAllText(DataPath + "appointments.txt", appointment_string);
+        File.WriteAllText(DataPath + "supplies.txt", supply_string);
+        File.WriteAllText(DataPath + "records.txt", record_string);
     }
 
     public void LoadData() {
@@ -52,15 +37,17 @@ class DataHandler {
          * Deserializes the data from the strings that are loaded from
          * the specified files and loads them into the List properties.  
          */
-        string petString            = LoadString("pets.txt");
-        string appointmentString    = LoadString("appointments.txt");
-        string supplyString         = LoadString("supplies.txt");
-        string recordString         = LoadString("records.txt");
+        StringLoader string_loader = new StringLoader();
 
-        Pets            = JsonSerializer.Deserialize<List<Pet>>(petString); 
-        Appointments    = JsonSerializer.Deserialize<List<Appointment>>(appointmentString); 
-        Supplies        = JsonSerializer.Deserialize<List<Supply>>(supplyString); 
-        MedicalRecords  = JsonSerializer.Deserialize<List<MedicalRecord>>(recordString); 
+        string pet_string            = string_loader.Load("pets.txt");
+        string appointment_string    = string_loader.Load("appointments.txt");
+        string supply_string         = string_loader.Load("supplies.txt");
+        string record_string         = string_loader.Load("records.txt");
+
+        Pets            = JsonSerializer.Deserialize<List<Pet>>(pet_string); 
+        Appointments    = JsonSerializer.Deserialize<List<Appointment>>(appointment_string); 
+        Supplies        = JsonSerializer.Deserialize<List<Supply>>(supply_string); 
+        MedicalRecords  = JsonSerializer.Deserialize<List<MedicalRecord>>(record_string);
     }
 
     public void AddPet(int user_id) {
