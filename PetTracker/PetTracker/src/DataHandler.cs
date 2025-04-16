@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Text.Json;
-using Microsoft.VisualBasic.FileIO;
 
 class DataHandler {
     public List<Pet> Pets {get; set;}
@@ -48,61 +45,5 @@ class DataHandler {
         Appointments    = JsonSerializer.Deserialize<List<Appointment>>(appointment_string); 
         Supplies        = JsonSerializer.Deserialize<List<Supply>>(supply_string); 
         MedicalRecords  = JsonSerializer.Deserialize<List<MedicalRecord>>(record_string);
-    }
-
-    public void AddPet(int user_id) {
-        Console.WriteLine("Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Breed: ");
-        string breed = Console.ReadLine();
-        Console.WriteLine("Sex: ");
-        string sex = Console.ReadLine();
-        Console.WriteLine("Birthday: ");
-        string birthday = Console.ReadLine();
-
-        Pets.Add(new Pet(0, name, breed, char.Parse(sex), birthday, user_id));
-    }
-
-    public void AddAppointment() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Type: ");
-        string type = Console.ReadLine();
-        Console.WriteLine("Date: ");
-        string date = Console.ReadLine();
-        Console.WriteLine("Location: ");
-        string location = Console.ReadLine();
-        Console.WriteLine("Description: ");
-        string description = Console.ReadLine();
-
-        Appointments.Add(new Appointment(0, int.Parse(pet_id), type, date, location, description));
-    }
-
-    public void AddSupply() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Date Received: ");
-        string date_received = Console.ReadLine();
-        Console.WriteLine("Resupply Rate: ");
-        string resupply_rate = Console.ReadLine();
-        Console.WriteLine("Location: ");
-        string location = Console.ReadLine();
-
-        Supplies.Add(new Supply(0, int.Parse(pet_id), name, date_received, resupply_rate, location));
-    }
-
-    public void AddMedicalRecord() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Record Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Initial Date: ");
-        string initial_date = Console.ReadLine();
-        Console.WriteLine("Rate: ");
-        string rate = Console.ReadLine();
-
-        MedicalRecords.Add(new MedicalRecord(0, int.Parse(pet_id), name, initial_date, rate));
     }
 }

@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using System.Text.Json;
 
 class AccountHandler {
@@ -24,6 +23,7 @@ class AccountHandler {
             Credentials = JsonSerializer.Deserialize<Dictionary<string, string>>(data_string);
         } catch (JsonException e) {
             Console.WriteLine("Unable to load the data.");
+            Console.WriteLine(e);
         }
     }
 
@@ -35,61 +35,4 @@ class AccountHandler {
         string data_string = JsonSerializer.Serialize(Credentials);
         File.WriteAllText(DataPath, data_string);
     }
-
-    public string Login() {
-        string username, password;
-
-        Console.WriteLine("\nLogin\n");
-
-        while (true) {
-            Console.WriteLine("Username:");
-            username = Console.ReadLine();
-            Console.WriteLine("Password:");
-            password = Console.ReadLine();
-
-            if (!Credentials.ContainsKey(username) || Credentials[username] != password) {
-                Console.WriteLine("Invalid Credentials");
-            } else {
-                return username;
-            }
-        }
-    }
-
-    public void CreateAccount() {
-        bool valid_username = false;
-        string username  = "";
-        string password  = "";
-        string password2 = "-";
-
-        Console.WriteLine("\nCreate Account\n");
-
-        // Create username
-        while (!valid_username) {
-            Console.WriteLine("Username: ");
-            username = Console.ReadLine();
-
-            // Check if the username is taken
-            if (Credentials.ContainsKey(username)) {
-                Console.WriteLine("Username is already taken.");
-            } else {
-                valid_username = true;
-            }
-        }
-
-        // Create password
-        while (password != password2) {
-            Console.WriteLine("Password:");
-            password = Console.ReadLine();
-            Console.WriteLine("Retype password:");
-            password2 = Console.ReadLine();
-
-            // Check if passwords match
-            if (password != password2) {
-                Console.WriteLine("Passwords do not match.");
-            }
-        }
-
-        Credentials[username] = password;
-    }
-
 }
