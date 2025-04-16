@@ -36,24 +36,7 @@ class AccountHandler {
         File.WriteAllText(DataPath, data_string);
     }
 
-    public string Login() {
-        string username, password;
 
-        Console.WriteLine("\nLogin\n");
-
-        while (true) {
-            Console.WriteLine("Username:");
-            username = Console.ReadLine();
-            Console.WriteLine("Password:");
-            password = Console.ReadLine();
-
-            if (!Credentials.ContainsKey(username) || Credentials[username] != password) {
-                Console.WriteLine("Invalid Credentials");
-            } else {
-                return username;
-            }
-        }
-    }
 
     public void CreateAccount() {
         bool valid_username = false;
