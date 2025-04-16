@@ -7,10 +7,12 @@ class UserInterface {
 
     }
 
-    public void Title() {
+    public int Title() {
         Console.WriteLine("\n---------------\n| Pet Tracker |\n---------------");
-        Console.WriteLine("\n1. Login\n2. Create Account");
+        Console.WriteLine("\n1. Login\n2. Create Account\n3. Quit");
         string input = Console.ReadLine();
+
+        return int.Parse(input);
     }
 
     public string Login() {
@@ -32,6 +34,45 @@ class UserInterface {
                 return username;
             }
         }
+    }
+
+    public string CreateAccount() {
+        bool valid_username = false;
+        string username  = "";
+        string password  = "";
+        string password2 = "-";
+
+        Console.WriteLine("\nCreate Account\n");
+
+        // Create username
+        while (!valid_username) {
+            Console.WriteLine("Username: ");
+            username = Console.ReadLine();
+
+            // Check if the username is taken
+            if (Account_Handler.Credentials.ContainsKey(username)) {
+                Console.WriteLine("Username is already taken.");
+            } else {
+                valid_username = true;
+            }
+        }
+
+        // Create password
+        while (password != password2) {
+            Console.WriteLine("Password:");
+            password = Console.ReadLine();
+            Console.WriteLine("Retype password:");
+            password2 = Console.ReadLine();
+
+            // Check if passwords match
+            if (password != password2) {
+                Console.WriteLine("Passwords do not match.");
+            }
+        }
+
+        Account_Handler.Credentials[username] = password;
+        Account_Handler.SaveAccounts();
+        return username;
     }
 
     public int MainMenu() {
@@ -61,7 +102,7 @@ class UserInterface {
         return choice;
     }
 
-    public void AddPet(int user_id) {
+    public void AddPet(string user) {
         Console.WriteLine("Name: ");
         string name = Console.ReadLine();
         Console.WriteLine("Breed: ");
@@ -71,7 +112,7 @@ class UserInterface {
         Console.WriteLine("Birthday: ");
         string birthday = Console.ReadLine();
 
-        Data_Handler.Pets.Add(new Pet(0, name, breed, char.Parse(sex), birthday, user_id));
+        Data_Handler.Pets.Add(new Pet(0, name, breed, char.Parse(sex), birthday, user));
     }
 
     public void AddAppointment() {
@@ -138,10 +179,4 @@ class UserInterface {
             record.QuickDetails();
         }
     }
-
-    public void ExitProgram() {
-        Data_Handler.SaveData();
-        Console.WriteLine("Goodbye!");
-    }
-
 }

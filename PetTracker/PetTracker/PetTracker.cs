@@ -3,55 +3,56 @@
 using System.Text.Json;
 
 class PetTracker {
-
-    static int Login() {
-        Console.WriteLine("What is your user #?");
-        string input = Console.ReadLine();
-        return int.Parse(input);
-    }
-  
+ 
     static void Main(string[] args) {
-        bool running = true;
-
         UserInterface ui = new UserInterface();
+        bool running = true;
+        string username = "";
             
-        ui.Title(); 
-
-        int user = Login();
-
-        string un = ui.Login();
-
-        Console.WriteLine("Hello " + un + "!"); 
-
         while (running) {
-            int choice = ui.MainMenu();
-
-            switch (choice) {
+            // Title and Login
+            int login_choice = ui.Title(); 
+            switch(login_choice) {
                 case 1:
-                    ui.AddPet(user);
+                    username = ui.Login();
                     break;
                 case 2:
-                    ui.AddAppointment();
+                    username = ui.CreateAccount();
                     break;
                 case 3:
-                    ui.AddSupply();
-                    break;
-                case 4:
-                    ui.AddMedicalRecord();
-                    break;
-                case 5:
-                    ui.ExitProgram();
-                    running = false;
-                    break; 
-                default:
-                    Console.WriteLine("Default switch choice selected. Check input.");
-                    Console.WriteLine(choice);
                     running = false;
                     break;
             }
 
-            ui.ShowAllData();
-            
+            // Main Menu
+            if (running) {
+                int menu_choice = ui.MainMenu();
+                switch (menu_choice) {
+                    case 1:
+                        ui.AddPet(username);
+                        break;
+                    case 2:
+                        ui.AddAppointment();
+                        break;
+                    case 3:
+                        ui.AddSupply();
+                        break;
+                    case 4:
+                        ui.AddMedicalRecord();
+                        break;
+                    case 5:
+                        running = false;
+                        break; 
+                    default:
+                        Console.WriteLine("Default choice selected: " + menu_choice);
+                        running = false;
+                        break;
+                }
+
+                ui.ShowAllData(); 
+            }
         } 
+
+        Console.WriteLine("\nGoodbye!");
     }
 }
