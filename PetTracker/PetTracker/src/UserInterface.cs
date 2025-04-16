@@ -20,62 +20,55 @@ class UserInterface {
         string username, password;
 
         Console.WriteLine("\nLogin\n");
+        Console.WriteLine("Username:");
+        username = Console.ReadLine();
+        Console.WriteLine("Password:");
+        password = Console.ReadLine();
 
-        while (true) {
-            Console.WriteLine("Username:");
-            username = Console.ReadLine();
-            Console.WriteLine("Password:");
-            password = Console.ReadLine();
-
-            if (!Account_Handler.Credentials.ContainsKey(username) || 
-                 Account_Handler.Credentials[username] != password) {
-                Console.WriteLine("Invalid Credentials");
-            } else {
-                return username;
-            }
+        if (!Account_Handler.Credentials.ContainsKey(username) || 
+                Account_Handler.Credentials[username] != password) {
+            Console.WriteLine("\nInvalid Credentials");
+            return "";
+        } else {
+            return username;
         }
     }
 
     public string CreateAccount() {
-        bool valid_username = false;
-        string username  = "";
-        string password  = "";
-        string password2 = "-";
+        string username, password, password2;
 
         Console.WriteLine("\nCreate Account\n");
 
         // Create username
-        while (!valid_username) {
-            Console.WriteLine("Username: ");
-            username = Console.ReadLine();
+        Console.WriteLine("Username: ");
+        username = Console.ReadLine();
 
-            // Check if the username is taken
-            if (Account_Handler.Credentials.ContainsKey(username)) {
-                Console.WriteLine("Username is already taken.");
-            } else {
-                valid_username = true;
-            }
+        // Check if the username is taken
+        if (Account_Handler.Credentials.ContainsKey(username)) {
+            Console.WriteLine("\nUsername is already taken.");
+            return "";
         }
 
         // Create password
-        while (password != password2) {
-            Console.WriteLine("Password:");
-            password = Console.ReadLine();
-            Console.WriteLine("Retype password:");
-            password2 = Console.ReadLine();
+        Console.WriteLine("Password:");
+        password = Console.ReadLine();
+        Console.WriteLine("Retype password:");
+        password2 = Console.ReadLine();
 
-            // Check if passwords match
-            if (password != password2) {
-                Console.WriteLine("Passwords do not match.");
-            }
+        // Check if passwords match
+        if (password != password2) {
+            Console.WriteLine("\nPasswords do not match.");
+            return "";
         }
 
+        
         Account_Handler.Credentials[username] = password;
         Account_Handler.SaveAccounts();
         return username;
     }
 
     public int MainMenu() {
+        Data_Handler.LoadData();
         int choice = 0; 
         while (choice == 0) {
             Console.WriteLine(
@@ -84,7 +77,7 @@ class UserInterface {
                 "2. Add appointment\n" +
                 "3. Add supply\n" +
                 "4. Add medical record\n" +
-                "5. Quit\n"
+                "5. Log out\n"
             );
 
             try {
@@ -113,6 +106,7 @@ class UserInterface {
         string birthday = Console.ReadLine();
 
         Data_Handler.Pets.Add(new Pet(0, name, breed, char.Parse(sex), birthday, user));
+        Data_Handler.SaveData();
     }
 
     public void AddAppointment() {
@@ -128,6 +122,7 @@ class UserInterface {
         string description = Console.ReadLine();
 
         Data_Handler.Appointments.Add(new Appointment(0, int.Parse(pet_id), type, date, location, description));
+        Data_Handler.SaveData();
     }
 
     public void AddSupply() {
@@ -143,6 +138,7 @@ class UserInterface {
         string location = Console.ReadLine();
 
         Data_Handler.Supplies.Add(new Supply(0, int.Parse(pet_id), name, date_received, resupply_rate, location));
+        Data_Handler.SaveData();
     }
 
     public void AddMedicalRecord() {
@@ -156,6 +152,7 @@ class UserInterface {
         string rate = Console.ReadLine();
 
         Data_Handler.MedicalRecords.Add(new MedicalRecord(0, int.Parse(pet_id), name, initial_date, rate));
+        Data_Handler.SaveData();
     }
 
     public void ShowAllData() {

@@ -1,7 +1,4 @@
-using System;
-using System.IO;
 using System.Text.Json;
-using Microsoft.VisualBasic.FileIO;
 
 class DataHandler {
     public List<Pet> Pets {get; set;}
