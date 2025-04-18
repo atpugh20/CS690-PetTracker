@@ -1,3 +1,9 @@
+/** 
+ * The account handler object handles all account and
+ * credential managment. It will serialize and deserialze
+ * the account information from the specified files.
+ */
+
 using System.Text.Json;
 
 class AccountHandler {

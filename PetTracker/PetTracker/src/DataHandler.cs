@@ -1,23 +1,38 @@
+/**
+ * The Data Handler object controls all data manipulation 
+ * and tracking. It loads and saves the data from/to the
+ * data files.
+ */
+
 using System.Text.Json;
+using System.Collections.Specialized;
 
 class DataHandler {
     public List<Pet>           Pets {get; set;}
     public List<Appointment>   Appointments {get; set;} 
     public List<Supply>        Supplies {get; set;}
     public List<MedicalRecord> MedicalRecords {get; set;}
+    public List<Event>         Events {get; set;}
 
     private string DataPath {get;}
+
 
     public DataHandler() {
         Pets           = [];
         Appointments   = [];
         Supplies       = [];
         MedicalRecords = [];
+        Events         = [];
 
-        DataPath       = "./data/";
+        DataPath        = "./data/";
     }
 
     public void SaveData() {
+        /**
+         * Serializes the data from our data lists and saves them to their
+         * respective files. This does not append, it rewrites the file with
+         * the new JSON string.
+         */
         string pet_string         = JsonSerializer.Serialize(Pets);
         string appointment_string = JsonSerializer.Serialize(Appointments);
         string supply_string      = JsonSerializer.Serialize(Supplies);
@@ -47,7 +62,93 @@ class DataHandler {
         MedicalRecords = JsonSerializer.Deserialize<List<MedicalRecord>>(record_string);
     }
 
+    public void PopulateEvents() {
+        /** 
+         * Takes the data from our lists and turns them into events
+         * that will be added to our Events list. This will eventually
+         * be turned into a table on the main menu.
+         */
+        Events = [];
+
+        DateTime current_date = DateTime.Now;
+        DateTime end_date     = current_date.AddYears(1);
+
+        // Get birthdays 
+        foreach (Pet p in Pets) {
+            DateTime birthday = p.Birthday;
+            while (birthday < current_date) {
+                birthday = birthday.AddYears(1);
+            }
+            Events.Add(new(p.Name + "'s birthday", birthday));
+        }
+
+        // Get appointments
+        foreach (Appointment a in Appointments) {
+            if (a.Date >= current_date && a.Date <= end_date) {
+                Events.Add(
+                    new(
+                        a.PetName + "'s " + a.Type + " appointment", 
+                        a.Date
+                    ));
+            }
+        }
+
+        // Get resupplies
+        foreach (Supply s in Supplies) {
+            DateTime date = s.DateReceived; 
+            while (date < current_date) {
+                date = IncrementDate(date, s.ResupplyRate);
+            }
+            Events.Add(new("Buy " + s.PetName + "'s " + s.Name, date));
+        }
+
+        // Get medical record repeats
+        foreach (MedicalRecord m in MedicalRecords) {
+            DateTime date = m.InitialDate;
+            while (date < current_date) {
+                date = IncrementDate(date, m.Rate);
+            }
+            Events.Add(new(m.PetName + "'s " + m.Name, date));
+        }
+
+        // Sort events by date
+        Events = [.. Events.OrderBy(e => e.Date)];
+    }
+
+    public DateTime IncrementDate(DateTime date, string rate) {
+        /** 
+         * Takes the date and increments it according to the
+         * input rate. This is used for the upcoming events table.
+         */
+        switch (rate) {
+            case "Annual":
+                date = date.AddYears(1);
+                break;
+            case "Every 6 Months":
+                date = date.AddMonths(6);
+                break;
+            case "Monthly":
+                date = date.AddMonths(1);
+                break;
+            case "Every 2 weeks":
+                date = date.AddDays(14);
+                break;
+            case "Weekly":
+                date = date.AddDays(7);
+                break;
+            case "Daily":
+                date = date.AddDays(1);
+                break;
+        }
+
+        return date;
+    }
+
     public List<string> GetPetNames() {
+        /** 
+         * Returns a list of all pet names from our list 
+         * of Pet objects. These are used as unique identifiers.
+         */
         List<string> names = [];
 
         foreach (Pet pet in Pets) {
@@ -57,6 +158,10 @@ class DataHandler {
     }
 
     public List<string> GetAppointmentDetails() {
+        /** 
+         * Returns a list of details from our list of appointment objects. 
+         * These details are used as unique identifiers.
+         */
         List<string> details = [];
 
         foreach (Appointment appointment in Appointments) {
@@ -71,6 +176,10 @@ class DataHandler {
     }
 
     public List<string> GetSupplyDetails() {
+        /** 
+         * Returns a list of details from our list of supply objects. 
+         * These details are used as unique identifiers.
+         */
         List<string> details = [];
 
         foreach (Supply supply in Supplies) {
@@ -85,6 +194,10 @@ class DataHandler {
     }
 
     public List<string> GetRecordDetails() {
+        /** 
+         * Returns a list of details from our list of medical record 
+         * objects. These details are used as unique identifiers.
+         */
         List<string> details = [];
 
         foreach (MedicalRecord record in MedicalRecords) {

@@ -1,4 +1,18 @@
-﻿namespace PetTracker;
+﻿/** 
+ * Pet Tracking Application
+ * 
+ * Alex Pugh
+ * 
+ * This is the Main file for our project. With this project, we aim to 
+ * help users to track their pet's necessities. These necessities include,
+ * but are not limited to, appointments, supplies, and medical records.
+ *
+ * Most of the code for our project will be located in the UserInterface.cs
+ * file. However, our Main method provides the basic structure of the program's
+ * capabilities.
+ */
+
+namespace PetTracker;
 
 using Spectre.Console;
 
@@ -42,6 +56,9 @@ class PetTracker {
             if (logged_in) {
                 string menu_choice = ui.MainMenu();
                 switch (menu_choice) {
+                    case "View more events":
+                        ui.ShownEventCount = ui.GetEventCount();
+                        break;
                     case "Edit pets":
                         ui.EditPets(username);
                         break;
