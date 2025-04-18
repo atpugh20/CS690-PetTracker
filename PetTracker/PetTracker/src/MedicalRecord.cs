@@ -14,22 +14,4 @@ class MedicalRecord {
         InitialDate = initial_date;
         Rate        = rate;
     }
-
-    public void QuickDetails() {
-        Console.WriteLine(
-            Name + " - " + 
-            InitialDate.Date.ToString("MM/dd/yyyy") + " - " + 
-            Rate
-        );
-    }
-
-    public void PrintDetails() {
-        Console.WriteLine(
-            "Pet Name: "     + PetName     + '\n' +
-            "Record Name: "  + Name        + '\n' +
-            "Initial Date: " + InitialDate + '\n' +
-            "Rate: "         + Rate        + '\n'
-        );
-    }
-
 }

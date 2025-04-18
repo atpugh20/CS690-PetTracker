@@ -23,22 +23,4 @@ class Appointment {
         Location    = location;
         Description = description;
     }
-
-    public void QuickDetails() {
-        Console.WriteLine(
-            Type + " - " + 
-            Date.Date.ToString("MM/dd/yyyy") + " - " + 
-            Location
-        );
-    }
-
-    public void PrintDetails() {
-        Console.WriteLine(
-            "Type:\t\t"      + Type        + '\n' +
-            "Pet Name:\t\t"  + PetName     + '\n' +
-            "Date:\t\t"      + Date        + '\n' +
-            "Location:\t"    + Location    + '\n' +
-            "Description:\t" + Description + '\n'
-        );
-    }
 }

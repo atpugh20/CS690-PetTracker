@@ -22,22 +22,4 @@ class Supply {
         ResupplyRate = resupply_rate;
         Location     = location;
     }
-
-    public void QuickDetails() {
-        Console.WriteLine(
-            Name + " - " + 
-            DateReceived.Date.ToString("MM/dd/yyyy") + " - " + 
-            Location
-        );
-    }
-
-    public void PrintDetails() {
-        Console.WriteLine(
-            "Pet ID:\t\t"      + PetName      + '\n' +
-            "Name:\t\t"        + Name         + '\n' +
-            "Date Received:\t" + DateReceived + '\n' +
-            "Resupply Rate:\t" + ResupplyRate + '\n' +
-            "Location:\t"      + Location     + '\n'
-        );
-    }
 }

@@ -87,8 +87,12 @@ class DataHandler {
     public List<string> GetRecordDetails() {
         List<string> details = [];
 
-        foreach (MedicalRecord medicalRecord in MedicalRecords) {
-
+        foreach (MedicalRecord record in MedicalRecords) {
+            details.Add(
+                record.Name    + " - " +
+                record.PetName + " - " +
+                record.InitialDate.Date.ToString("MM/dd/yyyy")
+            );
         }
 
         return details;

@@ -22,22 +22,4 @@ class Pet {
         Birthday = birthday;
         User     = user;
     }
-
-    public void QuickDetails() {
-        Console.WriteLine(
-            Name + " - " + 
-            Breed + " - " + 
-            Birthday.Date.ToString("MM/dd/yyyy")
-        );
-    }
-
-    public void PrintDetails() {
-        Console.WriteLine(
-            "Name:\t\t"   + Name     + '\n' +
-            "Breed:\t\t"  + Breed    + '\n' +
-            "Sex:\t\t"    + Sex      + '\n' +
-            "Birthday:\t" + Birthday + '\n' +
-            "User:\t\t"   + User     + '\n'
-        );
-    }
 }

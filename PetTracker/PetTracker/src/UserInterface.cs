@@ -420,6 +420,11 @@ class UserInterface {
     }
 
     public void AddMedicalRecord() {
+        /**
+         * Allows the user to add a medical record to 
+         * Data_Handler.MedicalRecords. After the user has filled 
+         * out all the options, the data will be saved. 
+         */
         List<string> rates = ["Annual", "Every 6 Months", "Monthly", 
             "Every 2 weeks", "Weekly", "Daily"];
 
@@ -433,11 +438,52 @@ class UserInterface {
     }
 
     public void DeleteMedicalRecord() {
+        /**
+         * Gives the user a list of their pets' medical records. 
+         * The record the user selects will be deleted from Data_Handler. 
+         * MedicalRecords will be updated and the data will be saved. 
+         */
+        List<string> choices = Data_Handler.GetRecordDetails();
+        choices.Add("Back");
 
+        string choice = AnsiSelectPrompt("Choose a record to delete", choices);
+
+        // If the user selected a supply, then remove it and save the data 
+        if (choice != "Back") {
+            Data_Handler.MedicalRecords.RemoveAll(
+                m => m.Name    + " - " + 
+                     m.PetName + " - " +
+                     m.InitialDate.Date.ToString("MM/dd/yyyy") == choice
+            );
+            Data_Handler.SaveData();
+        }
     }
 
     public void ListMedicalRecords() {
+        /**
+         * Lists all the user's pets' medical records
+         */
+        AnsiConsole.WriteLine("\n");
 
+        // Headers
+        Table table = new Table()
+            .Title("Medical Records")
+            .AddColumn("Record Name")
+            .AddColumn("Pet Name")
+            .AddColumn("Initial Date")
+            .AddColumn("Rate Administered");
+
+        // Rows per pet
+        foreach (MedicalRecord m in Data_Handler.MedicalRecords) {
+            table.AddRow(
+                m.Name,
+                m.PetName,
+                m.InitialDate.Date.ToString("MM/dd/yyyy"),
+                m.Rate
+            );
+        }
+
+        AnsiConsole.Write(table);
     }
 
     // PRIVATE METHODS
@@ -485,28 +531,4 @@ class UserInterface {
 
         return date;
     } 
-
-    /**** ADMIN ****/
-
-    public void ShowAllData() {
-        Console.WriteLine("\n--------------------\nPets:\n--------------------");
-        foreach (Pet pet in Data_Handler.Pets) {
-            pet.PrintDetails();
-        }
-
-        Console.WriteLine("\n--------------------\nAppointments:\n--------------------");
-        foreach (Appointment appointment in Data_Handler.Appointments) {
-            appointment.PrintDetails();
-        }
-
-        Console.WriteLine("\n--------------------\nSupplies:\n--------------------");
-        foreach (Supply supply in Data_Handler.Supplies) {
-            supply.PrintDetails();
-        }
-
-        Console.WriteLine("\n--------------------\nRecords:\n--------------------");
-        foreach (MedicalRecord record in Data_Handler.MedicalRecords) {
-            record.PrintDetails();
-        }
-    }
 }
