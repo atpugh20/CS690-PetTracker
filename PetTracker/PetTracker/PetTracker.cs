@@ -1,33 +1,34 @@
 ﻿namespace PetTracker;
 
+using Spectre.Console;
+
 class PetTracker {
-    static bool running = true;
-    static bool logged_in = false;
-    static string username = "";
+    static bool   running   = true;
+    static bool   logged_in = false;
+    static string username  = "";
 
     static void ExitProgram() {
         logged_in = false;
-        running = false;
-        username = "";
+        running   = false;
+        username  = "";
     }
  
     static void Main(string[] args) {
-        UserInterface ui = new UserInterface();
-
+        UserInterface ui = new();
 
         while (running) {
 
             // Title and Login
             if (!logged_in) {
-                int login_choice = ui.Title(); 
+                string login_choice = ui.Title(); 
                 switch(login_choice) {
-                    case 1:
+                    case "Login":
                         username = ui.Login();
                         break;
-                    case 2:
+                    case "Create Account":
                         username = ui.CreateAccount();
                         break;
-                    case 3:
+                    case "Quit":
                         ExitProgram();
                         break;
                 }
@@ -39,21 +40,22 @@ class PetTracker {
 
             // Main Menu
             if (logged_in) {
-                int menu_choice = ui.MainMenu();
+                string menu_choice = ui.MainMenu();
                 switch (menu_choice) {
-                    case 1:
-                        ui.AddPet(username);
+                    case "Edit pets":
+                        ui.EditPets(username);
                         break;
-                    case 2:
-                        ui.AddAppointment();
+                    case "Edit appointments":
+                        ui.EditAppointments();
                         break;
-                    case 3:
-                        ui.AddSupply();
+                    case "Edit supplies":
+                        ui.EditSupplies();
                         break;
-                    case 4:
-                        ui.AddMedicalRecord();
+                    case "Edit medical records":
+                        ui.EditMedicalRecords();
                         break;
-                    case 5:
+                    case "Log out":
+                        Console.WriteLine("\nGoodbye " + username + "!");
                         logged_in = false;
                         break; 
                     default:
@@ -61,11 +63,9 @@ class PetTracker {
                         ExitProgram(); 
                         break;
                 }
-
-                ui.ShowAllData(); 
             }
         }
 
-        Console.WriteLine("\nGoodbye!");
+        AnsiConsole.Markup("[bold]\nGoodbye!\n[/]"); 
     }
 }

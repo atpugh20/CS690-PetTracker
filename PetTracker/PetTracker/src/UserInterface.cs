@@ -1,179 +1,534 @@
-class UserInterface {
+using Spectre.Console;
 
-    private DataHandler Data_Handler = new DataHandler();
-    private AccountHandler Account_Handler = new AccountHandler();
+class UserInterface {
+    private DataHandler    Data_Handler {get;}
+    private AccountHandler Account_Handler {get;}
 
     public UserInterface() {
-
+        Data_Handler    = new();
+        Account_Handler = new();
     }
 
-    public int Title() {
-        Console.WriteLine("\n---------------\n| Pet Tracker |\n---------------");
-        Console.WriteLine("\n1. Login\n2. Create Account\n3. Quit");
-        string input = Console.ReadLine();
-
-        return int.Parse(input);
+    public string Title() {
+        /**
+         * Displays the title and prompts the user to either Login,
+         * Create an account, or quit the program.
+         */
+        List<string> choices = ["Login", "Create Account", "Quit"];
+        return AnsiSelectPrompt("\n[underline]Pet Tracker[/]", choices);
     }
 
     public string Login() {
+        /**
+         * Allows the user to log in to an existing account. If the
+         * credentials to not match and existing account, the user
+         * is alerted of this, and is taken back to the title screen.
+         */
         Account_Handler.LoadAccounts(); 
-        string username, password;
 
-        Console.WriteLine("\nLogin\n");
-        Console.WriteLine("Username:");
-        username = Console.ReadLine();
-        Console.WriteLine("Password:");
-        password = Console.ReadLine();
+        AnsiConsole.Markup("\n[underline]Login[/]\n\n");
+        string username = AnsiTextPrompt("Username: ");
+        string password = AnsiSecretPrompt("Password: ");
 
+        // Check if the credentials are valid
         if (!Account_Handler.Credentials.ContainsKey(username) || 
-                Account_Handler.Credentials[username] != password) {
-            Console.WriteLine("\nInvalid Credentials");
-            return "";
+             Account_Handler.Credentials[username] != password) {
+                AnsiConsole.WriteLine("\nInvalid credentials.");
+                return "";
         } else {
             return username;
         }
     }
 
     public string CreateAccount() {
-        string username, password, password2;
+        /**
+         * Allows the user to create a new account and add it to
+         * the list of existing accounts. The user must select a
+         * unique username, then type their password twice. If
+         * they fail to do either of these actions, they will be
+         * returned to the title screen.
+         */
+        Account_Handler.LoadAccounts();
 
-        Console.WriteLine("\nCreate Account\n");
+        AnsiConsole.Markup("\n[underline]Create Account[/]\n\n");
 
-        // Create username
-        Console.WriteLine("Username: ");
-        username = Console.ReadLine();
+        // Create username and password
+        AnsiConsole.Markup("\n[underline]Login[/]\n\n");
+        string username  = AnsiTextPrompt("Username: ");
+        string password  = AnsiSecretPrompt("Password: ");
+        string password2 = AnsiSecretPrompt("Retype password: ");
 
-        // Check if the username is taken
-        if (Account_Handler.Credentials.ContainsKey(username)) {
-            Console.WriteLine("\nUsername is already taken.");
+        // Check if the username is taken and if the passwords match
+        if (Account_Handler.Credentials.ContainsKey(username) ||
+            password != password2) {
+            AnsiConsole.WriteLine("\nInvalid credentials.");
             return "";
         }
 
-        // Create password
-        Console.WriteLine("Password:");
-        password = Console.ReadLine();
-        Console.WriteLine("Retype password:");
-        password2 = Console.ReadLine();
-
-        // Check if passwords match
-        if (password != password2) {
-            Console.WriteLine("\nPasswords do not match.");
-            return "";
-        }
-
-        
+        // Add account to the credentials map and save them 
         Account_Handler.Credentials[username] = password;
         Account_Handler.SaveAccounts();
+
         return username;
     }
 
-    public int MainMenu() {
+    public string MainMenu() {
         Data_Handler.LoadData();
-        int choice = 0; 
-        while (choice == 0) {
-            Console.WriteLine(
-                "\nWhat would you like to do?\n" +
-                "1. Add pet\n" +
-                "2. Add appointment\n" +
-                "3. Add supply\n" +
-                "4. Add medical record\n" +
-                "5. Log out\n"
-            );
 
-            try {
-                string input = Console.ReadLine();
-                choice = int.Parse(input);
+        List<string> choices = ["Edit pets", "Edit appointments", 
+            "Edit supplies", "Edit medical records", "Log out"];
 
-                if (choice < 1 || choice > 5) {
-                    choice = 0;
-                    Console.WriteLine("Invalid choice. Please try again!\n");
-                }
-            } catch (FormatException) {
-                Console.WriteLine("Invalid choice. Please try again!\n");
-            }
+        return AnsiSelectPrompt(
+            "\n[underline]What would you like to do?[/]", choices);
+    }
+
+    /**** PETS ****/
+
+    public void EditPets(string user) {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * pets. The options are add, delete, and list.
+         */
+        bool selecting = true;
+        List<string> choices = ["Add a pet", "Remove a pet", "List pets", "Back"];
+
+        while (selecting) {
+            string choice = AnsiSelectPrompt("Choose an option below:", choices);
+
+            switch (choice) {
+                case "Add a pet":
+                    AddPet(user);
+                    break;
+                case "Remove a pet":
+                    DeletePet();
+                    break;
+                case "List pets":
+                    ListPets();
+                    break;
+                case "Back":
+                    selecting = false;
+                    break;
+                default:
+                    AnsiConsole.WriteLine("Default choice (Edit pet): " + choice);
+                    break;
+            } 
         }
-        return choice;
     }
 
     public void AddPet(string user) {
-        Console.WriteLine("Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Breed: ");
-        string breed = Console.ReadLine();
-        Console.WriteLine("Sex: ");
-        string sex = Console.ReadLine();
-        Console.WriteLine("Birthday: ");
-        string birthday = Console.ReadLine();
+        /**
+         * Allows the user to add a pet to Data_Handler.Pets. 
+         * After the user has filled out all the options, the
+         * data will be saved. 
+         */
+        AnsiConsole.Markup("\n[underline]Add a pet[/]\n\n");
+        
+        string name       = AnsiTextPrompt("Name: ");
+        string breed      = AnsiTextPrompt("Breed: ");
+        string sex        = AnsiSelectPrompt("Sex: ", ["M", "F"]);
+        DateTime birthday = InputDate("Birthday");
 
-        Data_Handler.Pets.Add(new Pet(0, name, breed, char.Parse(sex), birthday, user));
+        // Add pet to list and save the data
+        Data_Handler.Pets.Add(new Pet(name, breed, sex, birthday, user));
         Data_Handler.SaveData();
+    }
+
+    public void DeletePet() {
+        /**
+         * Gives the user a list of their pets. The pet the user
+         * selects will be deleted from Data_Handler.Pets and the
+         * data will be saved. 
+         */
+        List<string> choices = Data_Handler.GetPetNames();
+        choices.Add("Back");
+
+        string choice = AnsiSelectPrompt("Choose a pet to delete:", choices);
+
+        // If the user selected a pet, then remove it and save the data 
+        if (choice != "Back") {
+            Data_Handler.Pets.RemoveAll(p => p.Name == choice);
+            Data_Handler.SaveData();
+        }
+    }
+
+    public void ListPets() {
+        /**
+         * Lists all the user's pets and their details.
+         */
+        AnsiConsole.WriteLine("\n");
+
+        // Headers
+        Table table = new Table()
+            .Title("Your Pets")
+            .AddColumn("Name")
+            .AddColumn("Breed")
+            .AddColumn("Sex")
+            .AddColumn("Birthday");
+
+        // Rows per pet
+        foreach (Pet p in Data_Handler.Pets) {
+            table.AddRow(
+                p.Name, 
+                p.Breed, 
+                p.Sex.ToString(), 
+                p.Birthday.Date.ToString("MM/dd/yyyy")
+            );
+        }
+
+        AnsiConsole.Write(table);
+    }
+
+    /**** APPOINTMENTS ****/
+
+    public void EditAppointments() {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * appointments. The options are add, delete, and list.
+         */
+        bool selecting = true;
+        List<string> choices = ["Add an appointment", "Remove an appointment",
+                        "List appointments", "Back"];
+
+        while (selecting) {
+            string choice = AnsiSelectPrompt("Choose and option below:", choices);
+
+            switch (choice) {
+                case "Add an appointment":
+                    AddAppointment();
+                    break;
+                case "Remove an appointment":
+                    DeleteAppointment();
+                    break;
+                case "List appointments":
+                    ListAppointments();
+                    break;
+                case "Back":
+                    selecting = false;
+                    break;
+                default:
+                    AnsiConsole.WriteLine("Default choice (Edit appointment): " + choice);
+                    break;
+            } 
+        }
     }
 
     public void AddAppointment() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Type: ");
-        string type = Console.ReadLine();
-        Console.WriteLine("Date: ");
-        string date = Console.ReadLine();
-        Console.WriteLine("Location: ");
-        string location = Console.ReadLine();
-        Console.WriteLine("Description: ");
-        string description = Console.ReadLine();
+        /**
+         * Allows the user to add an appointment to 
+         * Data_Handler.Appointments. After the user has filled 
+         * out all the options, the data will be saved. 
+         */
 
-        Data_Handler.Appointments.Add(new Appointment(0, int.Parse(pet_id), type, date, location, description));
+        string type        = AnsiTextPrompt("Appointment Type: ");
+        string pet_name    = SelectPetName();
+        DateTime date      = InputDate("Date");
+        string location    = AnsiTextPrompt("Location: ");
+        string description = AnsiTextPrompt("Description: ");
+
+        // Add appointment to the list and save the data
+        Data_Handler.Appointments.Add(new Appointment(type, pet_name, date, location, description));
         Data_Handler.SaveData();
+    }
+
+    public void DeleteAppointment() {
+        /**
+         * Gives the user a list of the appointments. The appointment 
+         * the user selects will be deleted from Data_Handler. Appointments 
+         * and the data will be saved. 
+         */
+        List<string> choices = Data_Handler.GetAppointmentDetails();
+        choices.Add("Back");
+
+        string choice = AnsiSelectPrompt("Choose an appointment to delete", choices);
+
+        // If the user selected an appointment, then remove it and save the data 
+        if (choice != "Back") {
+            Data_Handler.Appointments.RemoveAll(
+                a => a.Type    + " - " + 
+                     a.PetName + " - " + 
+                     a.Date.Date.ToString("MM/dd/yyyy") == choice
+            );
+            Data_Handler.SaveData();
+        }
+    }
+
+    public void ListAppointments() {
+        /**
+         * Lists all the user's upcoming appointments
+         */
+        AnsiConsole.WriteLine("\n");
+
+        // Headers
+        Table table = new Table()
+            .Title("Your Appointments")
+            .AddColumn("Type")
+            .AddColumn("Pet Name")
+            .AddColumn("Date")
+            .AddColumn("Location")
+            .AddColumn("Description");
+
+        // Rows per pet
+        foreach (Appointment a in Data_Handler.Appointments) {
+            table.AddRow(
+                a.Type, 
+                a.PetName, 
+                a.Date.Date.ToString("MM/dd/yyyy"), 
+                a.Location,
+                a.Description
+            );
+        }
+
+        AnsiConsole.Write(table);
+    }
+
+    /**** SUPPLIES ****/
+
+    public void EditSupplies() {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * supplies. The options are add, delete, and list.
+         */
+        bool selecting = true;
+        List<string> choices = ["Add a supply", "Remove a supply",
+            "List supplies", "Back"];
+
+        while (selecting) {
+            string choice = AnsiSelectPrompt("Choose and option below:", choices);
+
+            switch (choice) {
+                case "Add a supply":
+                    AddSupply();
+                    break;
+                case "Remove a supply":
+                    DeleteSupply();
+                    break;
+                case "List supplies":
+                    ListSupplies();
+                    break;
+                case "Back":
+                    selecting = false;
+                    break;
+                default:
+                    AnsiConsole.WriteLine("Default choice (Edit supplies): " + choice);
+                    break;
+            } 
+        }
     }
 
     public void AddSupply() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Date Received: ");
-        string date_received = Console.ReadLine();
-        Console.WriteLine("Resupply Rate: ");
-        string resupply_rate = Console.ReadLine();
-        Console.WriteLine("Location: ");
-        string location = Console.ReadLine();
+        /**
+         * Allows the user to add a supply to Data_Handler.Supplies. 
+         * After the user has filled out all the options, the data 
+         * will be saved. 
+         */
+        List<string> rates = ["Annual", "Every 6 Months", "Monthly", 
+            "Every 2 weeks", "Weekly"];
 
-        Data_Handler.Supplies.Add(new Supply(0, int.Parse(pet_id), name, date_received, resupply_rate, location));
+        string name            = AnsiTextPrompt("Supply Name: ");
+        string pet_name        = SelectPetName();
+        DateTime date_received = InputDate("Date Received");
+        string resupply_rate   = AnsiSelectPrompt("Resupply Rate:", rates);
+        string location        = AnsiTextPrompt("Location: ");
+
+        Data_Handler.Supplies.Add(new Supply(name, pet_name, date_received, resupply_rate, location));
         Data_Handler.SaveData();
+    }
+
+    public void DeleteSupply() {
+        /**
+         * Gives the user a list of their supplies. The supply the user
+         * selects will be deleted from Data_Handler. Supplies will be
+         * updated and the data will be saved. 
+         */
+        List<string> choices = Data_Handler.GetSupplyDetails();
+        choices.Add("Back");
+
+        string choice = AnsiSelectPrompt("Choose a supply to delete", choices);
+
+        // If the user selected a supply, then remove it and save the data 
+        if (choice != "Back") {
+            Data_Handler.Supplies.RemoveAll(
+                s => s.Name    + " - " + 
+                     s.PetName + " - " +
+                     s.DateReceived.Date.ToString("MM/dd/yyyy") == choice
+            );
+            Data_Handler.SaveData();
+        }
+    }
+
+    public void ListSupplies() {
+        /**
+         * Lists all the user's supplies
+         */
+        AnsiConsole.WriteLine("\n");
+
+        // Headers
+        Table table = new Table()
+            .Title("Your Supplies")
+            .AddColumn("Supply Name")
+            .AddColumn("Pet Name")
+            .AddColumn("Date Received")
+            .AddColumn("Resupply Rate")
+            .AddColumn("Location");
+
+        // Rows per pet
+        foreach (Supply s in Data_Handler.Supplies) {
+            table.AddRow(
+                s.Name,
+                s.PetName,
+                s.DateReceived.Date.ToString("MM/dd/yyyy"),
+                s.ResupplyRate,
+                s.Location
+            );
+        }
+
+        AnsiConsole.Write(table);
+    }
+
+    /**** MEDICAL RECORDS ****/
+
+    public void EditMedicalRecords() {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * pet's medical records. The options are add, delete, and list.
+         */
+        bool selecting = true;
+        List<string> choices = ["Add a medical record", "Remove a medical record",
+            "List medical records", "Back"];
+
+        while (selecting) {
+            string choice = AnsiSelectPrompt("Choose an option below:", choices);
+
+            switch (choice) {
+                case "Add a medical record":
+                    AddMedicalRecord();
+                    break;
+                case "Remove a medical record":
+                    DeleteMedicalRecord();
+                    break;
+                case "List medical records":
+                    ListMedicalRecords();
+                    break;
+                case "Back":
+                    selecting = false;
+                    break;
+                default:
+                    AnsiConsole.WriteLine("Default choice (Edit medical records): " + choice);
+                    break;
+            } 
+        }
     }
 
     public void AddMedicalRecord() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
-        Console.WriteLine("Record Name: ");
-        string name = Console.ReadLine();
-        Console.WriteLine("Initial Date: ");
-        string initial_date = Console.ReadLine();
-        Console.WriteLine("Rate: ");
-        string rate = Console.ReadLine();
+        /**
+         * Allows the user to add a medical record to 
+         * Data_Handler.MedicalRecords. After the user has filled 
+         * out all the options, the data will be saved. 
+         */
+        List<string> rates = ["Annual", "Every 6 Months", "Monthly", 
+            "Every 2 weeks", "Weekly", "Daily"];
 
-        Data_Handler.MedicalRecords.Add(new MedicalRecord(0, int.Parse(pet_id), name, initial_date, rate));
+        string name           = AnsiTextPrompt("Record Name: ");
+        string pet_name       = SelectPetName();
+        DateTime initial_date = InputDate("Initial Date: ");
+        string rate           = AnsiSelectPrompt("Rate administered:", rates);
+
+        Data_Handler.MedicalRecords.Add(new MedicalRecord(name, pet_name, initial_date, rate));
         Data_Handler.SaveData();
     }
 
-    public void ShowAllData() {
-        Console.WriteLine("\n--------------------\nPets:\n--------------------");
-        foreach (Pet pet in Data_Handler.Pets) {
-            pet.QuickDetails();
-        }
+    public void DeleteMedicalRecord() {
+        /**
+         * Gives the user a list of their pets' medical records. 
+         * The record the user selects will be deleted from Data_Handler. 
+         * MedicalRecords will be updated and the data will be saved. 
+         */
+        List<string> choices = Data_Handler.GetRecordDetails();
+        choices.Add("Back");
 
-        Console.WriteLine("\n--------------------\nAppointments:\n--------------------");
-        foreach (Appointment appointment in Data_Handler.Appointments) {
-            appointment.QuickDetails();
-        }
+        string choice = AnsiSelectPrompt("Choose a record to delete", choices);
 
-        Console.WriteLine("\n--------------------\nSupplies:\n--------------------");
-        foreach (Supply supply in Data_Handler.Supplies) {
-            supply.QuickDetails();
-        }
-
-        Console.WriteLine("\n--------------------\nRecords:\n--------------------");
-        foreach (MedicalRecord record in Data_Handler.MedicalRecords) {
-            record.QuickDetails();
+        // If the user selected a supply, then remove it and save the data 
+        if (choice != "Back") {
+            Data_Handler.MedicalRecords.RemoveAll(
+                m => m.Name    + " - " + 
+                     m.PetName + " - " +
+                     m.InitialDate.Date.ToString("MM/dd/yyyy") == choice
+            );
+            Data_Handler.SaveData();
         }
     }
+
+    public void ListMedicalRecords() {
+        /**
+         * Lists all the user's pets' medical records
+         */
+        AnsiConsole.WriteLine("\n");
+
+        // Headers
+        Table table = new Table()
+            .Title("Medical Records")
+            .AddColumn("Record Name")
+            .AddColumn("Pet Name")
+            .AddColumn("Initial Date")
+            .AddColumn("Rate Administered");
+
+        // Rows per pet
+        foreach (MedicalRecord m in Data_Handler.MedicalRecords) {
+            table.AddRow(
+                m.Name,
+                m.PetName,
+                m.InitialDate.Date.ToString("MM/dd/yyyy"),
+                m.Rate
+            );
+        }
+
+        AnsiConsole.Write(table);
+    }
+
+    // PRIVATE METHODS
+
+    private string AnsiTextPrompt(string text) {
+        return AnsiConsole.Prompt(
+            new TextPrompt<string>(text)
+        );
+    }
+
+    private string AnsiSecretPrompt(string text) {
+        return AnsiConsole.Prompt(
+            new TextPrompt<string>("Password: ")
+                .Secret(' ')
+        );
+    }
+
+    private string AnsiSelectPrompt(string title, List<string> choices) {
+        return AnsiConsole.Prompt(
+            new SelectionPrompt<string>() 
+                .Title(title)
+                .AddChoices(choices)
+        );
+    }
+
+    private string SelectPetName() {
+        return AnsiSelectPrompt("Choose a pet:", Data_Handler.GetPetNames());
+    }
+
+    private DateTime InputDate(string date_name = "Date") {
+        DateTime date;
+        string input;
+
+        while (true) {
+            input = AnsiConsole.Prompt(
+                new TextPrompt<string>(date_name + " (MM/DD/YYYY): ")
+            );
+            try {
+                date = DateTime.Parse(input);
+                break;
+            } catch (FormatException e) {
+                AnsiConsole.WriteLine("Invalid Date type.");
+            }
+        }
+
+        return date;
+    } 
 }

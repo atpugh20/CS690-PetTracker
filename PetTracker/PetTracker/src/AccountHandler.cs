@@ -6,7 +6,7 @@ class AccountHandler {
     private string DataPath {get;}
 
     public AccountHandler() {
-        Credentials = new Dictionary<string, string>();
+        Credentials = [];
         DataPath = "./data/data.txt";
     }
 
