@@ -1,29 +1,26 @@
 class Pet {
-    public int ID {get; set;}
-    public string Name {get; set;}
-    public string Breed {get; set;}
-    public char Sex {get; set;} 
+    public string   Name {get; set;}
+    public string   Breed {get; set;}
+    public char     Sex {get; set;} 
     public DateTime Birthday {get; set;}
-    public string User {get; set;}
+    public string   User {get; set;}
 
     // Empty Constructor for JSON Deserialize
     public Pet() {}
 
     // Standard Constructor
     public Pet(
-        int id,
-        string name, 
-        string breed,
-        char sex,
-        string birthday,
-        string user
+        string   name, 
+        string   breed,
+        char     sex,
+        DateTime birthday,
+        string   user
     ) {
-        ID          = id;
-        Name        = name;
-        Breed       = breed;
-        Sex         = sex;
-        Birthday    = DateTime.Parse(birthday);
-        User        = user;
+        Name     = name;
+        Breed    = breed;
+        Sex      = sex;
+        Birthday = birthday;
+        User     = user;
     }
 
     public void QuickDetails() {
@@ -36,7 +33,6 @@ class Pet {
 
     public void PrintDetails() {
         Console.WriteLine(
-            "ID:\t\t"       + ID        + '\n' +
             "Name:\t\t"     + Name      + '\n' +
             "Breed:\t\t"    + Breed     + '\n' +
             "Sex:\t\t"      + Sex       + '\n' +
