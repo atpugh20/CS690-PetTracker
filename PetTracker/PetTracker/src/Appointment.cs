@@ -11,6 +11,7 @@ class Appointment {
     public DateTime Date {get; set;}
     public string   Location {get; set;}
     public string   Description {get; set;}
+    public string   User {get; set;}
 
     // Empty Constructor for JSON Deserialize
     public Appointment() {}
@@ -21,12 +22,14 @@ class Appointment {
         string   pet_name,
         DateTime date,
         string   location,
-        string   description
+        string   description,
+        string   user
     ) {
         Type        = type;
         PetName     = pet_name;
         Date        = date;
         Location    = location;
         Description = description;
+        User        = user;
     }
 }

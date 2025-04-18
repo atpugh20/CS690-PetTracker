@@ -222,7 +222,7 @@ class UserInterface {
 
     /**** APPOINTMENTS ****/
 
-    public void EditAppointments() {
+    public void EditAppointments(string user) {
         /**
          * Provides a selection prompt for the user to edit their
          * appointments. The options are add, delete, and list.
@@ -236,7 +236,7 @@ class UserInterface {
 
             switch (choice) {
                 case "Add an appointment":
-                    AddAppointment();
+                    AddAppointment(user);
                     break;
                 case "Remove an appointment":
                     DeleteAppointment();
@@ -254,7 +254,7 @@ class UserInterface {
         }
     }
 
-    public void AddAppointment() {
+    public void AddAppointment(string user) {
         /**
          * Allows the user to add an appointment to 
          * Data_Handler.Appointments. After the user has filled 
@@ -268,7 +268,7 @@ class UserInterface {
         string description = AnsiTextPrompt("Description: ");
 
         // Add appointment to the list and save the data
-        Data_Handler.Appointments.Add(new Appointment(type, pet_name, date, location, description));
+        Data_Handler.Appointments.Add(new Appointment(type, pet_name, date, location, description, user));
         Data_Handler.SaveData();
     }
 
@@ -325,7 +325,7 @@ class UserInterface {
 
     /**** SUPPLIES ****/
 
-    public void EditSupplies() {
+    public void EditSupplies(string user) {
         /**
          * Provides a selection prompt for the user to edit their
          * supplies. The options are add, delete, and list.
@@ -339,7 +339,7 @@ class UserInterface {
 
             switch (choice) {
                 case "Add a supply":
-                    AddSupply();
+                    AddSupply(user);
                     break;
                 case "Remove a supply":
                     DeleteSupply();
@@ -357,7 +357,7 @@ class UserInterface {
         }
     }
 
-    public void AddSupply() {
+    public void AddSupply(string user) {
         /**
          * Allows the user to add a supply to Data_Handler.Supplies. 
          * After the user has filled out all the options, the data 
@@ -372,7 +372,7 @@ class UserInterface {
         string resupply_rate   = AnsiSelectPrompt("Resupply Rate:", rates);
         string location        = AnsiTextPrompt("Location: ");
 
-        Data_Handler.Supplies.Add(new Supply(name, pet_name, date_received, resupply_rate, location));
+        Data_Handler.Supplies.Add(new Supply(name, pet_name, date_received, resupply_rate, location, user));
         Data_Handler.SaveData();
     }
 
@@ -429,7 +429,7 @@ class UserInterface {
 
     /**** MEDICAL RECORDS ****/
 
-    public void EditMedicalRecords() {
+    public void EditMedicalRecords(string user) {
         /**
          * Provides a selection prompt for the user to edit their
          * pet's medical records. The options are add, delete, and list.
@@ -443,7 +443,7 @@ class UserInterface {
 
             switch (choice) {
                 case "Add a medical record":
-                    AddMedicalRecord();
+                    AddMedicalRecord(user);
                     break;
                 case "Remove a medical record":
                     DeleteMedicalRecord();
@@ -461,7 +461,7 @@ class UserInterface {
         }
     }
 
-    public void AddMedicalRecord() {
+    public void AddMedicalRecord(string user) {
         /**
          * Allows the user to add a medical record to 
          * Data_Handler.MedicalRecords. After the user has filled 
@@ -475,7 +475,7 @@ class UserInterface {
         DateTime initial_date = InputDate("Initial Date: ");
         string rate           = AnsiSelectPrompt("Rate administered:", rates);
 
-        Data_Handler.MedicalRecords.Add(new MedicalRecord(name, pet_name, initial_date, rate));
+        Data_Handler.MedicalRecords.Add(new MedicalRecord(name, pet_name, initial_date, rate, user));
         Data_Handler.SaveData();
     }
 

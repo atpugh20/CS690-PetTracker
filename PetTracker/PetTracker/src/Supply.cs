@@ -10,6 +10,7 @@ class Supply {
     public DateTime DateReceived {get; set;}
     public string   ResupplyRate {get; set;}
     public string   Location {get; set;}
+    public string   User {get; set;}
 
     // Empty Constructor for JSON Deserialize
     public Supply() {}
@@ -20,12 +21,14 @@ class Supply {
         string   pet_name,
         DateTime date_received,
         string   resupply_rate,
-        string   location
+        string   location,
+        string   user
     ) {
         Name         = name;
         PetName      = pet_name;
         DateReceived = date_received;
         ResupplyRate = resupply_rate;
         Location     = location;
+        User         = user;
     }
 }

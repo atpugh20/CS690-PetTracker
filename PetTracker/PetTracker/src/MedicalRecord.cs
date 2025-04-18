@@ -10,15 +10,23 @@ class MedicalRecord {
     public string   PetName {get; set;}
     public DateTime InitialDate {get; set;}
     public string   Rate {get; set;}
+    public string   User {get; set;}
 
     // Empty Constructor for JSON Deserialize
     public MedicalRecord() {}
 
     // Standard Constructor
-    public MedicalRecord(string name, string pet_name, DateTime initial_date, string rate) {
+    public MedicalRecord(
+        string   name, 
+        string   pet_name, 
+        DateTime initial_date, 
+        string   rate, 
+        string   user
+    ) {
         Name        = name;
         PetName     = pet_name;
         InitialDate = initial_date;
         Rate        = rate;
+        User        = user;
     }
 }

@@ -63,13 +63,13 @@ class PetTracker {
                         ui.EditPets(username);
                         break;
                     case "Edit appointments":
-                        ui.EditAppointments();
+                        ui.EditAppointments(username);
                         break;
                     case "Edit supplies":
-                        ui.EditSupplies();
+                        ui.EditSupplies(username);
                         break;
                     case "Edit medical records":
-                        ui.EditMedicalRecords();
+                        ui.EditMedicalRecords(username);
                         break;
                     case "Log out":
                         Console.WriteLine("\nGoodbye " + username + "!");
