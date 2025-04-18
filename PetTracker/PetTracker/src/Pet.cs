@@ -1,7 +1,7 @@
 class Pet {
     public string   Name {get; set;}
     public string   Breed {get; set;}
-    public char     Sex {get; set;} 
+    public string   Sex {get; set;} 
     public DateTime Birthday {get; set;}
     public string   User {get; set;}
 
@@ -12,7 +12,7 @@ class Pet {
     public Pet(
         string   name, 
         string   breed,
-        char     sex,
+        string   sex,
         DateTime birthday,
         string   user
     ) {

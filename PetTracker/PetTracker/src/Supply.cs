@@ -1,6 +1,6 @@
 class Supply {
+    public string   Name {get; set;} 
     public string   PetName {get; set;}
-    public string   Name {get; set;}
     public DateTime DateReceived {get; set;}
     public string   ResupplyRate {get; set;}
     public string   Location {get; set;}
@@ -10,15 +10,15 @@ class Supply {
 
     // Standard Constructor
     public Supply(
-        string pet_name,
-        string name,
-        string date_received,
-        string resupply_rate,
-        string location
+        string   name,
+        string   pet_name,
+        DateTime date_received,
+        string   resupply_rate,
+        string   location
     ) {
-        PetName      = pet_name;
         Name         = name;
-        DateReceived = DateTime.Parse(date_received);
+        PetName      = pet_name;
+        DateReceived = date_received;
         ResupplyRate = resupply_rate;
         Location     = location;
     }

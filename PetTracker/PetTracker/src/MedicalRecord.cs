@@ -1,6 +1,6 @@
-class MedicalRecord {
-    public string   PetName {get; set;}
+class MedicalRecord { 
     public string   Name {get; set;}
+    public string   PetName {get; set;}
     public DateTime InitialDate {get; set;}
     public string   Rate {get; set;}
 
@@ -8,10 +8,10 @@ class MedicalRecord {
     public MedicalRecord() {}
 
     // Standard Constructor
-    public MedicalRecord(string pet_name, string name, string initial_date, string rate) {
-        PetName     = pet_name;
+    public MedicalRecord(string name, string pet_name, DateTime initial_date, string rate) {
         Name        = name;
-        InitialDate = DateTime.Parse(initial_date);
+        PetName     = pet_name;
+        InitialDate = initial_date;
         Rate        = rate;
     }
 

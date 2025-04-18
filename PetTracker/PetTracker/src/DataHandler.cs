@@ -69,4 +69,28 @@ class DataHandler {
 
         return details;
     }
+
+    public List<string> GetSupplyDetails() {
+        List<string> details = [];
+
+        foreach (Supply supply in Supplies) {
+            details.Add(
+                supply.Name + " - "  + 
+                supply.PetName + " - " +
+                supply.DateReceived.Date.ToString("MM/dd/yyyy")
+            );
+        }
+
+        return details;
+    }
+
+    public List<string> GetRecordDetails() {
+        List<string> details = [];
+
+        foreach (MedicalRecord medicalRecord in MedicalRecords) {
+
+        }
+
+        return details;
+    }
 }
