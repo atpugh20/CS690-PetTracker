@@ -1,3 +1,9 @@
+/**
+ * Supply objects will be attached to a pet through the PetName
+ * string. These refer to something that the pet will need to 
+ * meet their needs. Examples are food, litter, and toys.
+ */
+
 class Supply {
     public string   Name {get; set;} 
     public string   PetName {get; set;}

@@ -1,3 +1,9 @@
+/** 
+ * This object contains a Load method which was used
+ * often across multiple files. This made it much easier
+ * to reuse it.
+ */
+
 class StringLoader {
     private string DataPath {get;}
 

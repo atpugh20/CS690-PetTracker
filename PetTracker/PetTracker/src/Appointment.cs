@@ -1,5 +1,11 @@
-class Appointment {
+/**
+ * Appointments are scheduled times set asside for something
+ * important involving a pet. The pet is attached to the appointment
+ * through the PetName string. Examples of appointments are vet visits,
+ * groomings, trainings, etc.
+ */
 
+class Appointment {
     public string   Type {get; set;}
     public string   PetName {get; set;}
     public DateTime Date {get; set;}

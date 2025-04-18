@@ -1,12 +1,23 @@
+/**
+ * The UserInterface object performs the grand majority of the 
+ * computations for our program. It controls almost everything 
+ * that is displayed in the console. It also contains the DataHandler 
+ * and AccountHandler objects so that it is able to directly put
+ * the data on the screen.
+ */
+
 using Spectre.Console;
 
 class UserInterface {
     private DataHandler    Data_Handler {get;}
     private AccountHandler Account_Handler {get;}
 
+    public int ShownEventCount {get; set;}
+
     public UserInterface() {
         Data_Handler    = new();
         Account_Handler = new();
+        ShownEventCount = 5;
     }
 
     public string Title() {
@@ -72,10 +83,41 @@ class UserInterface {
         return username;
     }
 
-    public string MainMenu() {
-        Data_Handler.LoadData();
+    public void ShowNextEvents() {
+        /**
+         * Uses a table to show upcoming events on the main
+         * menu. These events are in order by date. There will 
+         * be ShownEventCount events in the table.
+         */
+        Table table = new Table()
+            .Title("Upcoming Events")
+            .AddColumn("Event")
+            .AddColumn("Date");
+        for (int i = 0; i < ShownEventCount; i++) {
+            table.AddRow(
+                Data_Handler.Events[i].Description,
+                Data_Handler.Events[i].Date.Date.ToString("MM/dd/yyyy")
+            );
+        }
 
-        List<string> choices = ["Edit pets", "Edit appointments", 
+        AnsiConsole.WriteLine("\n");
+        AnsiConsole.Write(table);
+        ShownEventCount = 5;
+    }
+
+    public string MainMenu() {
+        /**
+         * This is the main selection screen that is shown
+         * after the user logs in. This is where the user will
+         * be able to select which data they want to view/edit.
+         */
+        Data_Handler.LoadData();
+        Data_Handler.PopulateEvents();
+
+        // List events
+        ShowNextEvents();
+
+        List<string> choices = ["View more events", "Edit pets", "Edit appointments", 
             "Edit supplies", "Edit medical records", "Log out"];
 
         return AnsiSelectPrompt(
@@ -267,7 +309,7 @@ class UserInterface {
             .AddColumn("Location")
             .AddColumn("Description");
 
-        // Rows per pet
+        // Rows per appointment
         foreach (Appointment a in Data_Handler.Appointments) {
             table.AddRow(
                 a.Type, 
@@ -371,7 +413,7 @@ class UserInterface {
             .AddColumn("Resupply Rate")
             .AddColumn("Location");
 
-        // Rows per pet
+        // Rows per supply
         foreach (Supply s in Data_Handler.Supplies) {
             table.AddRow(
                 s.Name,
@@ -473,7 +515,7 @@ class UserInterface {
             .AddColumn("Initial Date")
             .AddColumn("Rate Administered");
 
-        // Rows per pet
+        // Rows per medical record 
         foreach (MedicalRecord m in Data_Handler.MedicalRecords) {
             table.AddRow(
                 m.Name,
@@ -486,7 +528,7 @@ class UserInterface {
         AnsiConsole.Write(table);
     }
 
-    // PRIVATE METHODS
+    // PRIVATE HELPER METHODS
 
     private string AnsiTextPrompt(string text) {
         return AnsiConsole.Prompt(
@@ -531,4 +573,8 @@ class UserInterface {
 
         return date;
     } 
+
+    public int GetEventCount() {
+        return Data_Handler.Events.Count;
+    }
 }

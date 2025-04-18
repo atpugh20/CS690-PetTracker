@@ -1,3 +1,9 @@
+/**
+ * The pet is the basis for the entire project. Each pet will be
+ * attached to a user through the User string. Other objects use
+ * the Name property of the pet to show that it is for that pet.
+ */
+
 class Pet {
     public string   Name {get; set;}
     public string   Breed {get; set;}
