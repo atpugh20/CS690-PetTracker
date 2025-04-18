@@ -33,11 +33,11 @@ class Pet {
 
     public void PrintDetails() {
         Console.WriteLine(
-            "Name:\t\t"     + Name      + '\n' +
-            "Breed:\t\t"    + Breed     + '\n' +
-            "Sex:\t\t"      + Sex       + '\n' +
-            "Birthday:\t"   + Birthday  + '\n' +
-            "User:\t\t"     + User      + '\n'
+            "Name:\t\t"   + Name     + '\n' +
+            "Breed:\t\t"  + Breed    + '\n' +
+            "Sex:\t\t"    + Sex      + '\n' +
+            "Birthday:\t" + Birthday + '\n' +
+            "User:\t\t"   + User     + '\n'
         );
     }
 }

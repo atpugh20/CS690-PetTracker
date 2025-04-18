@@ -3,14 +3,14 @@
 using Spectre.Console;
 
 class PetTracker {
-    static bool   running = true;
+    static bool   running   = true;
     static bool   logged_in = false;
-    static string username = "";
+    static string username  = "";
 
     static void ExitProgram() {
-        logged_in   = false;
-        running     = false;
-        username    = "";
+        logged_in = false;
+        running   = false;
+        username  = "";
     }
  
     static void Main(string[] args) {

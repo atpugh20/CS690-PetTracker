@@ -121,6 +121,10 @@ class UserInterface {
     /**** PETS ****/
 
     public void EditPets(string user) {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * pets. The options are add, delete, and list.
+         */
         bool selecting = true;
 
         while (selecting) {
@@ -226,6 +230,9 @@ class UserInterface {
     }
 
     public void ListPets() {
+        /**
+         * Lists all the user's pets and their details.
+         */
         AnsiConsole.WriteLine("\n");
 
         // Headers
@@ -252,6 +259,10 @@ class UserInterface {
     /**** APPOINTMENTS ****/
 
     public void EditAppointments() {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * appointments. The options are add, delete, and list.
+         */
         bool selecting = true;
 
         while (selecting) {
@@ -287,43 +298,104 @@ class UserInterface {
     }
 
     public void AddAppointment() {
-        Console.WriteLine("Pet Name: ");
-        string pet_name = Console.ReadLine();
-        Console.WriteLine("Type: ");
-        string type = Console.ReadLine();
-        Console.WriteLine("Date: ");
-        string date = Console.ReadLine();
-        Console.WriteLine("Location: ");
-        string location = Console.ReadLine();
-        Console.WriteLine("Description: ");
-        string description = Console.ReadLine();
+        /**
+         * Allows the user to add an appointment to 
+         * Data_Handler.Appointments. After the user has filled 
+         * out all the options, the data will be saved. 
+         */
 
-        Data_Handler.Appointments.Add(new Appointment(pet_name, type, date, location, description));
+        // Appointment type
+        string type = AnsiConsole.Prompt(
+            new TextPrompt<string>("Appointment Type: ")
+        );
+
+        // Pet name
+        string pet_name = AnsiConsole.Prompt(
+            new SelectionPrompt<string>() 
+                .Title("Choose a pet:")
+                .AddChoices(Data_Handler.GetPetNames())
+        );
+
+        // Date
+        DateTime date;
+        string input;
+        while (true) {
+            input = AnsiConsole.Prompt(
+                new TextPrompt<string>("Date (MM/DD/YYYY): ")
+            );
+            try {
+                date = DateTime.Parse(input);
+                break;
+            } catch (FormatException e) {
+                AnsiConsole.WriteLine("Invalid Date type.");
+            }
+        }
+
+        // Location
+        string location = AnsiConsole.Prompt(
+            new TextPrompt<string>("Location: ")
+        );
+
+        // Description
+        string description = AnsiConsole.Prompt(
+            new TextPrompt<string>("Description: ")
+        );
+
+        // Add appointment to the list and save the data
+        Data_Handler.Appointments.Add(new Appointment(type, pet_name, date, location, description));
         Data_Handler.SaveData();
     }
 
     public void DeleteAppointment() {
+        /**
+         * Gives the user a list of the appointments. The appointment 
+         * the user selects will be deleted from Data_Handler. Appointments 
+         * and the data will be saved. 
+         */
+        List<string> choices = Data_Handler.GetAppointmentDetails();
+        choices.Add("Back");
 
+        // Prompt user for choice
+        string choice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>() 
+                .Title("Choose an appointment to delete:")
+                .AddChoices(choices)
+        );
+
+        // If the user selected a pet, then remove it and save the data 
+        if (choice != "Back") {
+            Data_Handler.Appointments.RemoveAll(
+                a => a.Type + " - " + 
+                     a.PetName + " - " + 
+                     a.Date.Date.ToString("MM/dd/yyyy") == choice
+            );
+            Data_Handler.SaveData();
+        }
     }
 
     public void ListAppointments() {
+        /**
+         * Lists all the user's upcoming appointments
+         */
         AnsiConsole.WriteLine("\n");
 
         // Headers
         Table table = new Table()
             .Title("Your Appointments")
-            .AddColumn("Name")
-            .AddColumn("Breed")
-            .AddColumn("Sex")
-            .AddColumn("Birthday");
+            .AddColumn("Type")
+            .AddColumn("Pet Name")
+            .AddColumn("Date")
+            .AddColumn("Location")
+            .AddColumn("Description");
 
         // Rows per pet
-        foreach (Pet p in Data_Handler.Pets) {
+        foreach (Appointment a in Data_Handler.Appointments) {
             table.AddRow(
-                p.Name, 
-                p.Breed, 
-                p.Sex.ToString(), 
-                p.Birthday.Date.ToString("MM/dd/yyyy")
+                a.Type, 
+                a.PetName, 
+                a.Date.Date.ToString("MM/dd/yyyy"), 
+                a.Location,
+                a.Description
             );
         }
 
@@ -333,6 +405,10 @@ class UserInterface {
     /**** SUPPLIES ****/
 
     public void EditSupplies() {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * supplies. The options are add, delete, and list.
+         */
         bool selecting = true;
 
         while (selecting) {
@@ -394,6 +470,10 @@ class UserInterface {
     /**** MEDICAL RECORDS ****/
 
     public void EditMedicalRecords() {
+        /**
+         * Provides a selection prompt for the user to edit their
+         * pet's medical records. The options are add, delete, and list.
+         */
         bool selecting = true;
 
         while (selecting) {
@@ -429,8 +509,8 @@ class UserInterface {
     }
 
     public void AddMedicalRecord() {
-        Console.WriteLine("Pet ID: ");
-        string pet_id = Console.ReadLine();
+        Console.WriteLine("Pet Name: ");
+        string pet_name = Console.ReadLine();
         Console.WriteLine("Record Name: ");
         string name = Console.ReadLine();
         Console.WriteLine("Initial Date: ");
@@ -438,7 +518,7 @@ class UserInterface {
         Console.WriteLine("Rate: ");
         string rate = Console.ReadLine();
 
-        Data_Handler.MedicalRecords.Add(new MedicalRecord(0, int.Parse(pet_id), name, initial_date, rate));
+        Data_Handler.MedicalRecords.Add(new MedicalRecord(pet_name, name, initial_date, rate));
         Data_Handler.SaveData();
     }
 
