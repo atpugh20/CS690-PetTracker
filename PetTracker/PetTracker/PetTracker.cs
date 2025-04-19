@@ -19,12 +19,10 @@ using Spectre.Console;
 class PetTracker {
     static bool   running   = true;
     static bool   logged_in = false;
-    static string username  = "";
 
     static void ExitProgram() {
         logged_in = false;
         running   = false;
-        username  = "";
     }
  
     static void Main(string[] args) {
@@ -37,17 +35,17 @@ class PetTracker {
                 string login_choice = ui.Title(); 
                 switch(login_choice) {
                     case "Login":
-                        username = ui.Login();
+                        ui.Login();
                         break;
                     case "Create Account":
-                        username = ui.CreateAccount();
+                        ui.CreateAccount();
                         break;
                     case "Quit":
                         ExitProgram();
                         break;
                 }
 
-                if (username != "") {
+                if (ui.Username != "") {
                     logged_in = true;
                 }
             }
@@ -60,19 +58,20 @@ class PetTracker {
                         ui.ShownEventCount = ui.GetEventCount();
                         break;
                     case "Edit pets":
-                        ui.EditPets(username);
+                        ui.EditPets();
                         break;
                     case "Edit appointments":
-                        ui.EditAppointments(username);
+                        ui.EditAppointments();
                         break;
                     case "Edit supplies":
-                        ui.EditSupplies(username);
+                        ui.EditSupplies();
                         break;
                     case "Edit medical records":
-                        ui.EditMedicalRecords(username);
+                        ui.EditMedicalRecords();
                         break;
                     case "Log out":
-                        Console.WriteLine("\nGoodbye " + username + "!");
+                        Console.WriteLine("\nGoodbye " + ui.Username + "!");
+                        ui.Username = "";
                         logged_in = false;
                         break; 
                     default:

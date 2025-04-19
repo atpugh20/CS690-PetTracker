@@ -12,12 +12,14 @@ class UserInterface {
     private DataHandler    Data_Handler {get;}
     private AccountHandler Account_Handler {get;}
 
-    public int ShownEventCount {get; set;}
+    public int    ShownEventCount {get; set;}
+    public string Username {get; set;}
 
     public UserInterface() {
         Data_Handler    = new();
         Account_Handler = new();
         ShownEventCount = 5;
+        Username        = "";
     }
 
     public string Title() {
@@ -29,7 +31,7 @@ class UserInterface {
         return AnsiSelectPrompt("\n[underline]Pet Tracker[/]", choices);
     }
 
-    public string Login() {
+    public void Login() {
         /**
          * Allows the user to log in to an existing account. If the
          * credentials to not match and existing account, the user
@@ -45,13 +47,13 @@ class UserInterface {
         if (!Account_Handler.Credentials.ContainsKey(username) || 
              Account_Handler.Credentials[username] != password) {
                 AnsiConsole.WriteLine("\nInvalid credentials.");
-                return "";
+                Username = "";
         } else {
-            return username;
+            Username = username;
         }
     }
 
-    public string CreateAccount() {
+    public void CreateAccount() {
         /**
          * Allows the user to create a new account and add it to
          * the list of existing accounts. The user must select a
@@ -73,14 +75,14 @@ class UserInterface {
         if (Account_Handler.Credentials.ContainsKey(username) ||
             password != password2) {
             AnsiConsole.WriteLine("\nInvalid credentials.");
-            return "";
+            Username = "";
         }
 
         // Add account to the credentials map and save them 
         Account_Handler.Credentials[username] = password;
         Account_Handler.SaveAccounts();
 
-        return username;
+        Username = username;
     }
 
     public void ShowNextEvents() {
@@ -89,6 +91,9 @@ class UserInterface {
          * menu. These events are in order by date. There will 
          * be ShownEventCount events in the table.
          */
+        if (ShownEventCount > Data_Handler.Events.Count) {
+            ShownEventCount = Data_Handler.Events.Count;
+        }
         Table table = new Table()
             .Title("Upcoming Events")
             .AddColumn("Event")
@@ -112,7 +117,7 @@ class UserInterface {
          * be able to select which data they want to view/edit.
          */
         Data_Handler.LoadData();
-        Data_Handler.PopulateEvents();
+        Data_Handler.PopulateEvents(Username);
 
         // List events
         ShowNextEvents();
@@ -126,7 +131,7 @@ class UserInterface {
 
     /**** PETS ****/
 
-    public void EditPets(string user) {
+    public void EditPets() {
         /**
          * Provides a selection prompt for the user to edit their
          * pets. The options are add, delete, and list.
@@ -136,10 +141,9 @@ class UserInterface {
 
         while (selecting) {
             string choice = AnsiSelectPrompt("Choose an option below:", choices);
-
             switch (choice) {
                 case "Add a pet":
-                    AddPet(user);
+                    AddPet();
                     break;
                 case "Remove a pet":
                     DeletePet();
@@ -157,21 +161,21 @@ class UserInterface {
         }
     }
 
-    public void AddPet(string user) {
+    public void AddPet() {
         /**
          * Allows the user to add a pet to Data_Handler.Pets. 
          * After the user has filled out all the options, the
          * data will be saved. 
          */
         AnsiConsole.Markup("\n[underline]Add a pet[/]\n\n");
-        
+
         string name       = AnsiTextPrompt("Name: ");
         string breed      = AnsiTextPrompt("Breed: ");
         string sex        = AnsiSelectPrompt("Sex: ", ["M", "F"]);
         DateTime birthday = InputDate("Birthday");
 
         // Add pet to list and save the data
-        Data_Handler.Pets.Add(new Pet(name, breed, sex, birthday, user));
+        Data_Handler.Pets.Add(new Pet(name, breed, sex, birthday, Username));
         Data_Handler.SaveData();
     }
 
@@ -181,14 +185,14 @@ class UserInterface {
          * selects will be deleted from Data_Handler.Pets and the
          * data will be saved. 
          */
-        List<string> choices = Data_Handler.GetPetNames();
+        List<string> choices = Data_Handler.GetPetNames(Username);
         choices.Add("Back");
 
         string choice = AnsiSelectPrompt("Choose a pet to delete:", choices);
 
         // If the user selected a pet, then remove it and save the data 
         if (choice != "Back") {
-            Data_Handler.Pets.RemoveAll(p => p.Name == choice);
+            Data_Handler.Pets.RemoveAll(p => p.Name == choice && p.User == Username);
             Data_Handler.SaveData();
         }
     }
@@ -209,12 +213,14 @@ class UserInterface {
 
         // Rows per pet
         foreach (Pet p in Data_Handler.Pets) {
-            table.AddRow(
-                p.Name, 
-                p.Breed, 
-                p.Sex.ToString(), 
-                p.Birthday.Date.ToString("MM/dd/yyyy")
-            );
+            if (p.User == Username) {
+                table.AddRow(
+                    p.Name, 
+                    p.Breed, 
+                    p.Sex.ToString(), 
+                    p.Birthday.Date.ToString("MM/dd/yyyy")
+                );
+            }
         }
 
         AnsiConsole.Write(table);
@@ -222,7 +228,7 @@ class UserInterface {
 
     /**** APPOINTMENTS ****/
 
-    public void EditAppointments(string user) {
+    public void EditAppointments() {
         /**
          * Provides a selection prompt for the user to edit their
          * appointments. The options are add, delete, and list.
@@ -236,7 +242,7 @@ class UserInterface {
 
             switch (choice) {
                 case "Add an appointment":
-                    AddAppointment(user);
+                    AddAppointment();
                     break;
                 case "Remove an appointment":
                     DeleteAppointment();
@@ -254,13 +260,12 @@ class UserInterface {
         }
     }
 
-    public void AddAppointment(string user) {
+    public void AddAppointment() {
         /**
          * Allows the user to add an appointment to 
          * Data_Handler.Appointments. After the user has filled 
          * out all the options, the data will be saved. 
          */
-
         string type        = AnsiTextPrompt("Appointment Type: ");
         string pet_name    = SelectPetName();
         DateTime date      = InputDate("Date");
@@ -268,7 +273,7 @@ class UserInterface {
         string description = AnsiTextPrompt("Description: ");
 
         // Add appointment to the list and save the data
-        Data_Handler.Appointments.Add(new Appointment(type, pet_name, date, location, description, user));
+        Data_Handler.Appointments.Add(new Appointment(type, pet_name, date, location, description, Username));
         Data_Handler.SaveData();
     }
 
@@ -278,7 +283,7 @@ class UserInterface {
          * the user selects will be deleted from Data_Handler. Appointments 
          * and the data will be saved. 
          */
-        List<string> choices = Data_Handler.GetAppointmentDetails();
+        List<string> choices = Data_Handler.GetAppointmentDetails(Username);
         choices.Add("Back");
 
         string choice = AnsiSelectPrompt("Choose an appointment to delete", choices);
@@ -288,7 +293,8 @@ class UserInterface {
             Data_Handler.Appointments.RemoveAll(
                 a => a.Type    + " - " + 
                      a.PetName + " - " + 
-                     a.Date.Date.ToString("MM/dd/yyyy") == choice
+                     a.Date.Date.ToString("MM/dd/yyyy") == choice &&
+                     a.User == Username
             );
             Data_Handler.SaveData();
         }
@@ -311,13 +317,15 @@ class UserInterface {
 
         // Rows per appointment
         foreach (Appointment a in Data_Handler.Appointments) {
-            table.AddRow(
-                a.Type, 
-                a.PetName, 
-                a.Date.Date.ToString("MM/dd/yyyy"), 
-                a.Location,
-                a.Description
-            );
+            if (a.User == Username) {
+                table.AddRow(
+                    a.Type, 
+                    a.PetName, 
+                    a.Date.Date.ToString("MM/dd/yyyy"), 
+                    a.Location,
+                    a.Description
+                );
+            }
         }
 
         AnsiConsole.Write(table);
@@ -325,7 +333,7 @@ class UserInterface {
 
     /**** SUPPLIES ****/
 
-    public void EditSupplies(string user) {
+    public void EditSupplies() {
         /**
          * Provides a selection prompt for the user to edit their
          * supplies. The options are add, delete, and list.
@@ -339,7 +347,7 @@ class UserInterface {
 
             switch (choice) {
                 case "Add a supply":
-                    AddSupply(user);
+                    AddSupply();
                     break;
                 case "Remove a supply":
                     DeleteSupply();
@@ -357,7 +365,7 @@ class UserInterface {
         }
     }
 
-    public void AddSupply(string user) {
+    public void AddSupply() {
         /**
          * Allows the user to add a supply to Data_Handler.Supplies. 
          * After the user has filled out all the options, the data 
@@ -372,7 +380,7 @@ class UserInterface {
         string resupply_rate   = AnsiSelectPrompt("Resupply Rate:", rates);
         string location        = AnsiTextPrompt("Location: ");
 
-        Data_Handler.Supplies.Add(new Supply(name, pet_name, date_received, resupply_rate, location, user));
+        Data_Handler.Supplies.Add(new Supply(name, pet_name, date_received, resupply_rate, location, Username));
         Data_Handler.SaveData();
     }
 
@@ -382,7 +390,7 @@ class UserInterface {
          * selects will be deleted from Data_Handler. Supplies will be
          * updated and the data will be saved. 
          */
-        List<string> choices = Data_Handler.GetSupplyDetails();
+        List<string> choices = Data_Handler.GetSupplyDetails(Username);
         choices.Add("Back");
 
         string choice = AnsiSelectPrompt("Choose a supply to delete", choices);
@@ -392,7 +400,8 @@ class UserInterface {
             Data_Handler.Supplies.RemoveAll(
                 s => s.Name    + " - " + 
                      s.PetName + " - " +
-                     s.DateReceived.Date.ToString("MM/dd/yyyy") == choice
+                     s.DateReceived.Date.ToString("MM/dd/yyyy") == choice &&
+                     s.User == Username
             );
             Data_Handler.SaveData();
         }
@@ -415,13 +424,15 @@ class UserInterface {
 
         // Rows per supply
         foreach (Supply s in Data_Handler.Supplies) {
-            table.AddRow(
-                s.Name,
-                s.PetName,
-                s.DateReceived.Date.ToString("MM/dd/yyyy"),
-                s.ResupplyRate,
-                s.Location
-            );
+            if (s.User == Username) {
+                table.AddRow(
+                    s.Name,
+                    s.PetName,
+                    s.DateReceived.Date.ToString("MM/dd/yyyy"),
+                    s.ResupplyRate,
+                    s.Location
+                );
+            }
         }
 
         AnsiConsole.Write(table);
@@ -429,7 +440,7 @@ class UserInterface {
 
     /**** MEDICAL RECORDS ****/
 
-    public void EditMedicalRecords(string user) {
+    public void EditMedicalRecords() {
         /**
          * Provides a selection prompt for the user to edit their
          * pet's medical records. The options are add, delete, and list.
@@ -443,7 +454,7 @@ class UserInterface {
 
             switch (choice) {
                 case "Add a medical record":
-                    AddMedicalRecord(user);
+                    AddMedicalRecord();
                     break;
                 case "Remove a medical record":
                     DeleteMedicalRecord();
@@ -461,7 +472,7 @@ class UserInterface {
         }
     }
 
-    public void AddMedicalRecord(string user) {
+    public void AddMedicalRecord() {
         /**
          * Allows the user to add a medical record to 
          * Data_Handler.MedicalRecords. After the user has filled 
@@ -475,7 +486,7 @@ class UserInterface {
         DateTime initial_date = InputDate("Initial Date: ");
         string rate           = AnsiSelectPrompt("Rate administered:", rates);
 
-        Data_Handler.MedicalRecords.Add(new MedicalRecord(name, pet_name, initial_date, rate, user));
+        Data_Handler.MedicalRecords.Add(new MedicalRecord(name, pet_name, initial_date, rate, Username));
         Data_Handler.SaveData();
     }
 
@@ -485,7 +496,7 @@ class UserInterface {
          * The record the user selects will be deleted from Data_Handler. 
          * MedicalRecords will be updated and the data will be saved. 
          */
-        List<string> choices = Data_Handler.GetRecordDetails();
+        List<string> choices = Data_Handler.GetRecordDetails(Username);
         choices.Add("Back");
 
         string choice = AnsiSelectPrompt("Choose a record to delete", choices);
@@ -495,7 +506,8 @@ class UserInterface {
             Data_Handler.MedicalRecords.RemoveAll(
                 m => m.Name    + " - " + 
                      m.PetName + " - " +
-                     m.InitialDate.Date.ToString("MM/dd/yyyy") == choice
+                     m.InitialDate.Date.ToString("MM/dd/yyyy") == choice &&
+                     m.User == Username
             );
             Data_Handler.SaveData();
         }
@@ -517,12 +529,14 @@ class UserInterface {
 
         // Rows per medical record 
         foreach (MedicalRecord m in Data_Handler.MedicalRecords) {
-            table.AddRow(
-                m.Name,
-                m.PetName,
-                m.InitialDate.Date.ToString("MM/dd/yyyy"),
-                m.Rate
-            );
+            if (m.User == Username) {
+                table.AddRow(
+                    m.Name,
+                    m.PetName,
+                    m.InitialDate.Date.ToString("MM/dd/yyyy"),
+                    m.Rate
+                );
+            }
         }
 
         AnsiConsole.Write(table);
@@ -538,7 +552,7 @@ class UserInterface {
 
     private string AnsiSecretPrompt(string text) {
         return AnsiConsole.Prompt(
-            new TextPrompt<string>("Password: ")
+            new TextPrompt<string>(text)
                 .Secret(' ')
         );
     }
@@ -552,7 +566,7 @@ class UserInterface {
     }
 
     private string SelectPetName() {
-        return AnsiSelectPrompt("Choose a pet:", Data_Handler.GetPetNames());
+        return AnsiSelectPrompt("Choose a pet:", Data_Handler.GetPetNames(Username));
     }
 
     private DateTime InputDate(string date_name = "Date") {
