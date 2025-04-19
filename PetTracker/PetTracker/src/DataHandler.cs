@@ -4,17 +4,18 @@
  * data files.
  */
 
+    
 using System.Text.Json;
 using System.Collections.Specialized;
 
 class DataHandler {
-    public List<Pet>           Pets {get; set;}
-    public List<Appointment>   Appointments {get; set;} 
-    public List<Supply>        Supplies {get; set;}
-    public List<MedicalRecord> MedicalRecords {get; set;}
-    public List<Event>         Events {get; set;}
+   public List<Pet>           Pets {get; set;}
+   public List<Appointment>   Appointments {get; set;} 
+   public List<Supply>        Supplies {get; set;}
+   public List<MedicalRecord> MedicalRecords {get; set;}
+   public List<Event>         Events {get; set;}
 
-    private string DataPath {get;}
+    string DataPath {get;}
 
 
     public DataHandler() {

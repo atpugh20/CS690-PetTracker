@@ -5,15 +5,14 @@
  * and AccountHandler objects so that it is able to directly put
  * the data on the screen.
  */
-
 using Spectre.Console;
 
 class UserInterface {
-    private DataHandler    Data_Handler {get;}
-    private AccountHandler Account_Handler {get;}
+    DataHandler    Data_Handler {get;}
+    AccountHandler Account_Handler {get;}
 
-    public int    ShownEventCount {get; set;}
-    public string Username {get; set;}
+    public int     ShownEventCount {get; set;}
+    public string  Username {get; set;}
 
     public UserInterface() {
         Data_Handler    = new();
