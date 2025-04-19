@@ -62,7 +62,7 @@ class DataHandler {
         MedicalRecords = JsonSerializer.Deserialize<List<MedicalRecord>>(record_string);
     }
 
-    public void PopulateEvents() {
+    public void PopulateEvents(string username) {
         /** 
          * Takes the data from our lists and turns them into events
          * that will be added to our Events list. This will eventually
@@ -75,40 +75,49 @@ class DataHandler {
 
         // Get birthdays 
         foreach (Pet p in Pets) {
-            DateTime birthday = p.Birthday;
-            while (birthday < current_date) {
-                birthday = birthday.AddYears(1);
+            if (p.User == username) {
+                DateTime birthday = p.Birthday;
+                while (birthday < current_date) {
+                    birthday = birthday.AddYears(1);
+                }
+                Events.Add(new(p.Name + "'s birthday", birthday));
+
             }
-            Events.Add(new(p.Name + "'s birthday", birthday));
         }
 
         // Get appointments
         foreach (Appointment a in Appointments) {
-            if (a.Date >= current_date && a.Date <= end_date) {
-                Events.Add(
-                    new(
-                        a.PetName + "'s " + a.Type + " appointment", 
-                        a.Date
-                    ));
+            if (a.User == username) {
+                if (a.Date >= current_date && a.Date <= end_date) {
+                    Events.Add(
+                        new(
+                            a.PetName + "'s " + a.Type + " appointment", 
+                            a.Date
+                        ));
+                }
             }
         }
 
         // Get resupplies
         foreach (Supply s in Supplies) {
-            DateTime date = s.DateReceived; 
-            while (date < current_date) {
-                date = IncrementDate(date, s.ResupplyRate);
+            if (s.User == username) {
+                DateTime date = s.DateReceived; 
+                while (date < current_date) {
+                    date = IncrementDate(date, s.ResupplyRate);
+                }
+                Events.Add(new("Buy " + s.PetName + "'s " + s.Name, date));
             }
-            Events.Add(new("Buy " + s.PetName + "'s " + s.Name, date));
         }
 
         // Get medical record repeats
         foreach (MedicalRecord m in MedicalRecords) {
-            DateTime date = m.InitialDate;
-            while (date < current_date) {
-                date = IncrementDate(date, m.Rate);
+            if (m.User == username) {
+                DateTime date = m.InitialDate;
+                while (date < current_date) {
+                    date = IncrementDate(date, m.Rate);
+                }
+                Events.Add(new(m.PetName + "'s " + m.Name, date));
             }
-            Events.Add(new(m.PetName + "'s " + m.Name, date));
         }
 
         // Sort events by date
@@ -144,7 +153,7 @@ class DataHandler {
         return date;
     }
 
-    public List<string> GetPetNames() {
+    public List<string> GetPetNames(string username) {
         /** 
          * Returns a list of all pet names from our list 
          * of Pet objects. These are used as unique identifiers.
@@ -152,12 +161,13 @@ class DataHandler {
         List<string> names = [];
 
         foreach (Pet pet in Pets) {
-            names.Add(pet.Name);
+            if (pet.User == username)
+                names.Add(pet.Name);
         } 
         return names;
     }
 
-    public List<string> GetAppointmentDetails() {
+    public List<string> GetAppointmentDetails(string username) {
         /** 
          * Returns a list of details from our list of appointment objects. 
          * These details are used as unique identifiers.
@@ -165,17 +175,19 @@ class DataHandler {
         List<string> details = [];
 
         foreach (Appointment appointment in Appointments) {
-            details.Add(
-                appointment.Type    + " - " + 
-                appointment.PetName + " - " +
-                appointment.Date.Date.ToString("MM/dd/yyyy")    
-            );
+            if (appointment.User == username) {
+                details.Add(
+                    appointment.Type    + " - " + 
+                    appointment.PetName + " - " +
+                    appointment.Date.Date.ToString("MM/dd/yyyy")    
+                );
+            }
         }
 
         return details;
     }
 
-    public List<string> GetSupplyDetails() {
+    public List<string> GetSupplyDetails(string username) {
         /** 
          * Returns a list of details from our list of supply objects. 
          * These details are used as unique identifiers.
@@ -183,17 +195,19 @@ class DataHandler {
         List<string> details = [];
 
         foreach (Supply supply in Supplies) {
-            details.Add(
-                supply.Name + " - "  + 
-                supply.PetName + " - " +
-                supply.DateReceived.Date.ToString("MM/dd/yyyy")
-            );
+            if (supply.User == username) {
+                details.Add(
+                    supply.Name + " - "  + 
+                    supply.PetName + " - " +
+                    supply.DateReceived.Date.ToString("MM/dd/yyyy")
+                );
+            }
         }
 
         return details;
     }
 
-    public List<string> GetRecordDetails() {
+    public List<string> GetRecordDetails(string username) {
         /** 
          * Returns a list of details from our list of medical record 
          * objects. These details are used as unique identifiers.
@@ -201,11 +215,13 @@ class DataHandler {
         List<string> details = [];
 
         foreach (MedicalRecord record in MedicalRecords) {
-            details.Add(
-                record.Name    + " - " +
-                record.PetName + " - " +
-                record.InitialDate.Date.ToString("MM/dd/yyyy")
-            );
+            if (record.User == username) {
+                details.Add(
+                    record.Name    + " - " +
+                    record.PetName + " - " +
+                    record.InitialDate.Date.ToString("MM/dd/yyyy")
+                );
+            }
         }
 
         return details;
