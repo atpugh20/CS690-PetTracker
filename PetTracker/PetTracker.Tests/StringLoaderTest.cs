@@ -22,5 +22,6 @@ public class StringLoaderTest {
 
         Debug.Assert(data_string == "[]");
         Debug.Assert(File.Exists("./data/" + FileName));
+
     }
 }
