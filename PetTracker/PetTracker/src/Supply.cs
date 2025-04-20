@@ -4,13 +4,15 @@
  * meet their needs. Examples are food, litter, and toys.
  */
 
-class Supply {
-    public string   Name {get; set;} 
-    public string   PetName {get; set;}
-    public DateTime DateReceived {get; set;}
-    public string   ResupplyRate {get; set;}
-    public string   Location {get; set;}
-    public string   User {get; set;}
+namespace PetTracker;
+
+public class Supply {
+    public string   Name {get; set;} = ""; 
+    public string   PetName {get; set;} = "";
+    public DateTime DateReceived {get; set;} = new();
+    public string   ResupplyRate {get; set;} = "";
+    public string   Location {get; set;} = "";
+    public string   User {get; set;} = "";
 
     // Empty Constructor for JSON Deserialize
     public Supply() {}

@@ -5,13 +5,15 @@
  * groomings, trainings, etc.
  */
 
-class Appointment {
-    public string   Type {get; set;}
-    public string   PetName {get; set;}
-    public DateTime Date {get; set;}
-    public string   Location {get; set;}
-    public string   Description {get; set;}
-    public string   User {get; set;}
+namespace PetTracker;
+
+public class Appointment {
+    public string   Type {get; set;} = "";
+    public string   PetName {get; set;} = "";
+    public DateTime Date {get; set;} = new();
+    public string   Location {get; set;} = "";
+    public string   Description {get; set;} = "";
+    public string   User {get; set;} = "";
 
     // Empty Constructor for JSON Deserialize
     public Appointment() {}

@@ -5,12 +5,14 @@
  * appointments, etc.
  */
 
-class MedicalRecord { 
-    public string   Name {get; set;}
-    public string   PetName {get; set;}
-    public DateTime InitialDate {get; set;}
-    public string   Rate {get; set;}
-    public string   User {get; set;}
+namespace PetTracker;
+
+public class MedicalRecord { 
+    public string   Name {get; set;} = "";
+    public string   PetName {get; set;} = "";
+    public DateTime InitialDate {get; set;} = new();
+    public string   Rate {get; set;} = "";
+    public string   User {get; set;} = "";
 
     // Empty Constructor for JSON Deserialize
     public MedicalRecord() {}

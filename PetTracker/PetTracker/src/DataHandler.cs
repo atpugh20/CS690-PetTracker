@@ -4,16 +4,17 @@
  * data files.
  */
 
+namespace PetTracker;
     
 using System.Text.Json;
 using System.Collections.Specialized;
 
-class DataHandler {
-   public List<Pet>           Pets {get; set;}
-   public List<Appointment>   Appointments {get; set;} 
-   public List<Supply>        Supplies {get; set;}
-   public List<MedicalRecord> MedicalRecords {get; set;}
-   public List<Event>         Events {get; set;}
+public class DataHandler {
+    public List<Pet>           Pets {get; set;}
+    public List<Appointment>   Appointments {get; set;} 
+    public List<Supply>        Supplies {get; set;}
+    public List<MedicalRecord> MedicalRecords {get; set;}
+    public List<Event>         Events {get; set;}
 
     string DataPath {get;}
 
@@ -39,6 +40,10 @@ class DataHandler {
         string supply_string      = JsonSerializer.Serialize(Supplies);
         string record_string      = JsonSerializer.Serialize(MedicalRecords);
 
+        if (!Directory.Exists(DataPath)) {
+            Directory.CreateDirectory(DataPath);
+        }
+
         File.WriteAllText(DataPath + "pets.txt", pet_string);
         File.WriteAllText(DataPath + "appointments.txt", appointment_string);
         File.WriteAllText(DataPath + "supplies.txt", supply_string);
@@ -57,10 +62,10 @@ class DataHandler {
         string supply_string      = string_loader.Load("supplies.txt");
         string record_string      = string_loader.Load("records.txt");
 
-        Pets           = JsonSerializer.Deserialize<List<Pet>>(pet_string); 
-        Appointments   = JsonSerializer.Deserialize<List<Appointment>>(appointment_string); 
-        Supplies       = JsonSerializer.Deserialize<List<Supply>>(supply_string); 
-        MedicalRecords = JsonSerializer.Deserialize<List<MedicalRecord>>(record_string);
+        Pets           = JsonSerializer.Deserialize<List<Pet>>(pet_string)                 ?? [];
+        Appointments   = JsonSerializer.Deserialize<List<Appointment>>(appointment_string) ?? [];
+        Supplies       = JsonSerializer.Deserialize<List<Supply>>(supply_string)           ?? [];
+        MedicalRecords = JsonSerializer.Deserialize<List<MedicalRecord>>(record_string)    ?? [];
     }
 
     public void PopulateEvents(string username) {
@@ -140,7 +145,7 @@ class DataHandler {
             case "Monthly":
                 date = date.AddMonths(1);
                 break;
-            case "Every 2 weeks":
+            case "Every 2 Weeks":
                 date = date.AddDays(14);
                 break;
             case "Weekly":

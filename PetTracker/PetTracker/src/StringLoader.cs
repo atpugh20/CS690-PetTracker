@@ -4,7 +4,9 @@
  * to reuse it.
  */
 
-class StringLoader {
+namespace PetTracker;
+
+public class StringLoader {
     private string DataPath {get;}
 
     public StringLoader() {
