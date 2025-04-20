@@ -28,8 +28,6 @@ public class StringLoader {
         if (File.Exists(DataPath + file_name)) {
             dataString = File.ReadAllText(DataPath + file_name);
         } else {
-            Console.WriteLine("Could not find " + DataPath + file_name);
-            Console.WriteLine("Creating new file at " + DataPath + file_name);
             File.WriteAllText(DataPath + file_name, dataString);
         }
 
