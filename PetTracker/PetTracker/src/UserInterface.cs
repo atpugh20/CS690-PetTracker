@@ -67,7 +67,6 @@ public class UserInterface {
         AnsiConsole.Markup("\n[underline]Create Account[/]\n\n");
 
         // Create username and password
-        AnsiConsole.Markup("\n[underline]Login[/]\n\n");
         string username  = AnsiTextPrompt("Username: ");
         string password  = AnsiSecretPrompt("Password: ");
         string password2 = AnsiSecretPrompt("Retype password: ");
@@ -485,7 +484,7 @@ public class UserInterface {
         string name           = AnsiTextPrompt("Record Name: ");
         string pet_name       = SelectPetName();
         DateTime initial_date = InputDate("Initial Date: ");
-        string rate           = AnsiSelectPrompt("Rate administered:", rates);
+        string rate           = AnsiSelectPrompt("Rate:", rates);
 
         Data_Handler.MedicalRecords.Add(new MedicalRecord(name, pet_name, initial_date, rate, Username));
         Data_Handler.SaveData();
@@ -526,7 +525,7 @@ public class UserInterface {
             .AddColumn("Record Name")
             .AddColumn("Pet Name")
             .AddColumn("Initial Date")
-            .AddColumn("Rate Administered");
+            .AddColumn("Rate");
 
         // Rows per medical record 
         foreach (MedicalRecord m in Data_Handler.MedicalRecords) {
