@@ -87,6 +87,10 @@ public class DataHandlerTests {
     [InlineData("Weekly", "11/18/1111")]
     [InlineData("Daily", "11/12/1111")]
     public void TestIncrementDate(string rate, string correct_string) {
+        /** 
+         * Ensures that the method increments each datetime object by
+         * the correct amount to the correct date.
+         */
         DateTime date = DateTime.Parse("11/11/1111");
         DateTime new_date = Data_Handler.IncrementDate(date, rate);
         string new_date_string = new_date.Date.ToString("MM/dd/yyyy");
