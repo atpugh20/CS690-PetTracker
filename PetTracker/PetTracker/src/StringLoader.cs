@@ -17,7 +17,7 @@ public class StringLoader {
         /**
          * Reads the file that is located at DataPath + file_name and
          * returns it as a string. If there is not a file located at
-         * the specified path, then it returns "[]".
+         * the specified path, then it returns default_string.
          */ 
         string dataString = default_string;
         if (File.Exists(DataPath + file_name)) {
