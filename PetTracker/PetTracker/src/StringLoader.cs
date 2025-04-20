@@ -20,6 +20,11 @@ public class StringLoader {
          * the specified path, then it returns default_string.
          */ 
         string dataString = default_string;
+
+        if (!Directory.Exists(DataPath)) {
+            Directory.CreateDirectory(DataPath);
+        }
+
         if (File.Exists(DataPath + file_name)) {
             dataString = File.ReadAllText(DataPath + file_name);
         } else {
