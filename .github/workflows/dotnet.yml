@@ -28,4 +28,4 @@ jobs:
       working-directory: ./PetTracker
     - name: Test
       run: dotnet test --no-build --verbosity normal
-      working-directory: ./PetTracker
+      working-directory: ./PetTracker/PetTracker.Tests

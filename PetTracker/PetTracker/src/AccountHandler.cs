@@ -3,10 +3,11 @@
  * credential managment. It will serialize and deserialze
  * the account information from the specified files.
  */
+namespace PetTracker;
 
 using System.Text.Json;
 
-class AccountHandler {
+public class AccountHandler {
     public Dictionary<string, string> Credentials {get; set;}
 
     private string DataPath {get;}
@@ -26,7 +27,7 @@ class AccountHandler {
         string data_string = string_loader.Load("data.txt", "{}");
 
         try {
-            Credentials = JsonSerializer.Deserialize<Dictionary<string, string>>(data_string);
+            Credentials = JsonSerializer.Deserialize<Dictionary<string, string>>(data_string) ?? [];
         } catch (JsonException e) {
             Console.WriteLine("Unable to load the data.");
             Console.WriteLine(e);

@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetTracker", "PetTracker\PetTracker.csproj", "{57ADCD19-85D0-415E-9B1B-76F2FBDF4233}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetTracker.Tests", "PetTracker.Tests\PetTracker.Tests.csproj", "{FE122162-F73E-4605-ABCC-1AA973BD06FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{57ADCD19-85D0-415E-9B1B-76F2FBDF4233}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57ADCD19-85D0-415E-9B1B-76F2FBDF4233}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57ADCD19-85D0-415E-9B1B-76F2FBDF4233}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE122162-F73E-4605-ABCC-1AA973BD06FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE122162-F73E-4605-ABCC-1AA973BD06FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE122162-F73E-4605-ABCC-1AA973BD06FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE122162-F73E-4605-ABCC-1AA973BD06FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

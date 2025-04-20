@@ -3,7 +3,9 @@
  * on the user's main menu. It has a description and a date.
  */
 
-class Event {
+namespace PetTracker;
+
+public class Event {
     public string   Description {get; set;}
     public DateTime Date {get; set;}
 

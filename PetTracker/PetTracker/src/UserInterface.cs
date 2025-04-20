@@ -5,15 +5,16 @@
  * and AccountHandler objects so that it is able to directly put
  * the data on the screen.
  */
+namespace PetTracker;
 
 using Spectre.Console;
 
-class UserInterface {
-    private DataHandler    Data_Handler {get;}
-    private AccountHandler Account_Handler {get;}
+public class UserInterface {
+    DataHandler    Data_Handler {get; set;}
+    AccountHandler Account_Handler {get; set;}
 
-    public int    ShownEventCount {get; set;}
-    public string Username {get; set;}
+    public int     ShownEventCount {get; set;}
+    public string  Username {get; set;}
 
     public UserInterface() {
         Data_Handler    = new();
@@ -372,7 +373,7 @@ class UserInterface {
          * will be saved. 
          */
         List<string> rates = ["Annual", "Every 6 Months", "Monthly", 
-            "Every 2 weeks", "Weekly"];
+            "Every 2 Weeks", "Weekly"];
 
         string name            = AnsiTextPrompt("Supply Name: ");
         string pet_name        = SelectPetName();
@@ -479,7 +480,7 @@ class UserInterface {
          * out all the options, the data will be saved. 
          */
         List<string> rates = ["Annual", "Every 6 Months", "Monthly", 
-            "Every 2 weeks", "Weekly", "Daily"];
+            "Every 2 Weeks", "Weekly", "Daily"];
 
         string name           = AnsiTextPrompt("Record Name: ");
         string pet_name       = SelectPetName();
@@ -581,7 +582,7 @@ class UserInterface {
                 date = DateTime.Parse(input);
                 break;
             } catch (FormatException e) {
-                AnsiConsole.WriteLine("Invalid Date type.");
+                AnsiConsole.WriteLine("Invalid Date type." + e);
             }
         }
 

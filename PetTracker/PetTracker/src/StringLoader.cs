@@ -4,7 +4,9 @@
  * to reuse it.
  */
 
-class StringLoader {
+namespace PetTracker;
+
+public class StringLoader {
     private string DataPath {get;}
 
     public StringLoader() {
@@ -15,9 +17,14 @@ class StringLoader {
         /**
          * Reads the file that is located at DataPath + file_name and
          * returns it as a string. If there is not a file located at
-         * the specified path, then it returns "[]".
+         * the specified path, then it returns default_string.
          */ 
         string dataString = default_string;
+
+        if (!Directory.Exists(DataPath)) {
+            Directory.CreateDirectory(DataPath);
+        }
+
         if (File.Exists(DataPath + file_name)) {
             dataString = File.ReadAllText(DataPath + file_name);
         } else {
