@@ -546,14 +546,9 @@ public class UserInterface {
     // PRIVATE HELPER METHODS
 
     private string AnsiTextPrompt(string text) {
-        string input = AnsiConsole.Prompt(
+        return AnsiConsole.Prompt(
             new TextPrompt<string>(text)
         );
-
-        if (input == null) 
-            return "";
-
-        return input;
     }
 
     private string AnsiSecretPrompt(string text) {

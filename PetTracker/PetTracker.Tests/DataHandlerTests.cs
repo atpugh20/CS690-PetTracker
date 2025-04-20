@@ -18,7 +18,6 @@ public class DataHandlerTests {
     static DateTime Date {get;} = DateTime.Parse("11/11/2022");
     static string Location {get;} = "1234 Main St.";
     static string Rate {get;} = "Monthly";
-
     Pet Pet {get;} = new(PetName, "Cat", "F", Date, User);
     Appointment Appointment {get;} = new("Vet", PetName, Date, Location, "N/A", User);
     Supply Supply {get;} = new("Food", PetName, Date, Rate, Location, User);
@@ -34,7 +33,7 @@ public class DataHandlerTests {
     [Fact]
     public void TestSaveData() {
         /** 
-         * Ensures that the save data method creates the file
+         * Ensures that the save data method creates each file
          * and directory.
          */
         Data_Handler.SaveData();
@@ -73,9 +72,6 @@ public class DataHandlerTests {
          */
         AddTestData();
         Data_Handler.PopulateEvents(User);
-        foreach (var e in Data_Handler.Events) {
-            Console.WriteLine(e.Description + ": " + e.Date);
-        }
         Debug.Assert(Data_Handler.Events.Count == 3);
     }
 
@@ -153,18 +149,5 @@ public class DataHandlerTests {
 
         List<string> details = Data_Handler.GetRecordDetails(User);
         Debug.Assert(details.Count == 1);
-    }
-
-    [Fact]
-    public void RemoveData() {
-        /** 
-         * Deletes all the data after all the tests are run.
-         */
-        foreach (string f in FileNames) {
-            File.Delete(FilePath + f);
-        }
-
-        if (Directory.Exists(FilePath))
-            Directory.Delete(FilePath);
     }
 }
