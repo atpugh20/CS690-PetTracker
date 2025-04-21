@@ -10,18 +10,11 @@ namespace PetTracker;
 using Spectre.Console;
 
 public class UserInterface {
-    DataHandler    Data_Handler {get; set;}
-    AccountHandler Account_Handler {get; set;}
+    DataHandler    Data_Handler {get; set;} = new();
+    AccountHandler Account_Handler {get; set;} = new();
 
-    public int     ShownEventCount {get; set;}
-    public string  Username {get; set;}
-
-    public UserInterface() {
-        Data_Handler    = new();
-        Account_Handler = new();
-        ShownEventCount = 5;
-        Username        = "";
-    }
+    public int     ShownEventCount {get; set;} = 5;
+    public string  Username {get; set;} = "";
 
     public string Title() {
         /**
@@ -48,10 +41,10 @@ public class UserInterface {
         if (!Account_Handler.Credentials.ContainsKey(username) || 
              Account_Handler.Credentials[username] != password) {
                 AnsiConsole.WriteLine("\nInvalid credentials.");
-                Username = "";
-        } else {
-            Username = username;
-        }
+                username = "";
+        } 
+
+        Username = username;
     }
 
     public void CreateAccount() {
@@ -75,7 +68,7 @@ public class UserInterface {
         if (Account_Handler.Credentials.ContainsKey(username) ||
             password != password2) {
             AnsiConsole.WriteLine("\nInvalid credentials.");
-            Username = "";
+            username = "";
         }
 
         // Add account to the credentials map and save them 
@@ -91,9 +84,12 @@ public class UserInterface {
          * menu. These events are in order by date. There will 
          * be ShownEventCount events in the table.
          */
+
+        // Prevents index error if there are not at least 5 events
         if (ShownEventCount > Data_Handler.Events.Count) {
             ShownEventCount = Data_Handler.Events.Count;
         }
+
         Table table = new Table()
             .Title("Upcoming Events")
             .AddColumn("Event")
@@ -545,12 +541,14 @@ public class UserInterface {
     // PRIVATE HELPER METHODS
 
     private string AnsiTextPrompt(string text) {
+        // Shortens the call for the text prompt
         return AnsiConsole.Prompt(
             new TextPrompt<string>(text)
         );
     }
 
     private string AnsiSecretPrompt(string text) {
+        // Shortens the call for entering a password
         return AnsiConsole.Prompt(
             new TextPrompt<string>(text)
                 .Secret(' ')
@@ -558,6 +556,7 @@ public class UserInterface {
     }
 
     private string AnsiSelectPrompt(string title, List<string> choices) {
+        // Shortens the prompt for the selection prompt
         return AnsiConsole.Prompt(
             new SelectionPrompt<string>() 
                 .Title(title)
@@ -566,10 +565,16 @@ public class UserInterface {
     }
 
     private string SelectPetName() {
+        // Runs the select prompt for pet names specifically
         return AnsiSelectPrompt("Choose a pet:", Data_Handler.GetPetNames(Username));
     }
 
     private DateTime InputDate(string date_name = "Date") {
+        /**
+         * Prompts the user to enter a date. It then checks if the input
+         * can be converted to a DateTime object. If it can, it returns it.
+         * If it cannot, it asks again.
+         */
         DateTime date;
         string input;
 
@@ -589,6 +594,7 @@ public class UserInterface {
     } 
 
     public int GetEventCount() {
+        // Getter function for the number of events
         return Data_Handler.Events.Count;
     }
 }
